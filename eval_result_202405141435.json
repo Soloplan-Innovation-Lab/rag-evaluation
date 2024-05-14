@@ -1,0 +1,375 @@
+{
+    "deepeval_g_eval": [
+      {
+        "success": false,
+        "metrics": [
+          {
+            "name": "Correctness",
+            "evaluation_params": [
+              "input",
+              "actual_output",
+              "retrieval_context"
+            ],
+            "criteria": "Determine whether the actual output is factually correct based on the expected output. Note, that the retrieval context can be used to verify the correctness of the output.",
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "evaluation_steps": [
+              "Check whether the facts in 'actual output' contradicts any facts in 'expected output'",
+              "You should also heavily penalize omission of detail",
+              "Vague language, or contradicting OPINIONS, are OK"
+            ],
+            "_threshold": 0.7,
+            "strict_mode": false,
+            "async_mode": true,
+            "evaluation_cost": null,
+            "reason": "The formula correctly adds 5 working days to the current date using the 'AddWorkingDays' function, but the comparison with 'IsThisMonth()' may not always be accurate as it only returns true if the end date is within the current month, and not if it is before or after the current month. Additionally, the formula is not entirely clear and lacks some detail.",
+            "score": 0.6,
+            "success": false
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_answer_relevancy": [
+      {
+        "success": true,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "include_reason": true,
+            "async_mode": true,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "statements": [
+              "AddWorkingDays",
+              "Today()",
+              "IsThisMonth()",
+              "5",
+              ">",
+              "0"
+            ],
+            "verdicts": [
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "no",
+                "reason": "The '>' symbol is not a statement and is not relevant to addressing the input."
+              }
+            ],
+            "score": 0.8333333333333334,
+            "reason": "The score is 0.83 because there was only one irrelevant statement in the output. The output generally addressed the input by providing a formula for checking if the end date is still in the current month after adding 5 working days to the current date.",
+            "success": true
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_faithfulness": [
+      {
+        "success": true,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "include_reason": true,
+            "async_mode": true,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "truths": [
+              "IsThisMonth(DateTime) returns True if the specified date falls within the current month.",
+              "Today() returns the current date.",
+              "AddMonths(Today(), 1) returns the date that is one month ahead of the current date at midnight.",
+              "AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value.",
+              "The Iso2Code parameter in AddWorkingDays() is optional and specifies the country for which the holidays are to be considered.",
+              "The ZipCode parameter in AddWorkingDays() is optional and can be used to consider local holidays.",
+              "AddWorkingDays() function takes holidays into consideration when adding working days."
+            ],
+            "claims": [
+              "Today is being used as a parameter in a function",
+              "The function is called AddWorkingDays",
+              "The AddWorkingDays function takes two parameters",
+              "The first parameter is Today()",
+              "The second parameter is 5",
+              "The output of AddWorkingDays is being used as a parameter in another function",
+              "The function is called IsThisMonth",
+              "The IsThisMonth function returns a value",
+              "The value returned by IsThisMonth is being compared to 0",
+              "The comparison operator being used is >"
+            ],
+            "verdicts": [
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "no",
+                "reason": "The actual output claims that AddWorkingDays takes two parameters, but in reality it takes three parameters - DateTime, DaysCount, and [optional] Iso2Code."
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              }
+            ],
+            "score": 0.9,
+            "reason": "The score is 0.90 because although there was a minor error in the actual output regarding the number of parameters for AddWorkingDays, overall the output was highly faithful to the retrieval context.",
+            "success": true
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_contextual_precision": [
+      {
+        "success": true,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "include_reason": true,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "async_mode": true,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "verdicts": [
+              {
+                "verdict": "yes",
+                "reason": "The function 'AddWorkingDays' is used to add 5 working days to the current date obtained from the 'Today()' function."
+              },
+              {
+                "verdict": "yes",
+                "reason": "The resulting date from the 'AddWorkingDays' function is then passed as an argument to the 'IsThisMonth' function to check if it falls within the current month."
+              },
+              {
+                "verdict": "no",
+                "reason": "The context mentions other functions like 'AddMonths' and 'Iso2Code' which are not relevant to the input and output provided."
+              }
+            ],
+            "score": 1,
+            "reason": "The score is 1.00 because all the relevant nodes in the retrieval contexts are ranked higher than the irrelevant node. The first two nodes provide specific information on how to create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date, with clear references to the necessary functions and arguments. The third node, which mentions other irrelevant functions, is ranked lower and does not affect the overall precision score.",
+            "success": true
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_contextual_recall": [
+      {
+        "success": true,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "include_reason": true,
+            "async_mode": true,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "verdicts": [
+              {
+                "verdict": "yes",
+                "reason": "The sentence mentions the function AddWorkingDays, which is present in the retrieval context as the 3rd node."
+              }
+            ],
+            "score": 1,
+            "reason": "The score is 1.00 because the expected output perfectly matches the retrieval context, with the function AddWorkingDays being present as the 3rd node, fully supporting the sentence's validity. Well done!",
+            "success": true
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_contextual_relevancy": [
+      {
+        "success": false,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "include_reason": true,
+            "async_mode": true,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "verdicts": [
+              {
+                "verdict": "no",
+                "reason": "The context is about a function that checks if a date is in the current month, but the input is asking to create a formula for checking if the end date is still in the current month after adding 5 working days to the current date. The context does not provide any information about adding working days to a date."
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              },
+              {
+                "verdict": "yes",
+                "reason": null
+              }
+            ],
+            "score": 0.6666666666666666,
+            "reason": "The score is 0.67 because the input is asking for a formula that involves adding 5 working days to the current date before checking if the end date is still in the current month, but the retrieval context only talks about a function that checks if a date is in the current month and does not provide any information about adding working days.",
+            "success": false
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": null,
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "deepeval_evaluate_hallucination": [
+      {
+        "success": true,
+        "metrics": [
+          {
+            "_threshold": 0.7,
+            "using_native_model": false,
+            "evaluation_model": "Custom Azure OpenAI Model",
+            "include_reason": true,
+            "async_mode": false,
+            "strict_mode": false,
+            "evaluation_cost": null,
+            "verdicts": [
+              {
+                "verdict": "no",
+                "reason": "The actual output does not clearly relate to any of the provided contexts."
+              },
+              {
+                "verdict": "yes",
+                "reason": "The actual output agrees with the provided context which states that Today() returns the current date."
+              },
+              {
+                "verdict": "no",
+                "reason": "The actual output contradicts the provided context which states that AddWorkingDays takes in a number of working days as the second parameter, not a boolean value."
+              }
+            ],
+            "score": 0.6666666666666666,
+            "reason": "The hallucination score is 0.67 because the actual output contradicts the provided context by taking a boolean value as the second parameter for AddWorkingDays, which is not expected behavior. However, the output agrees with the context that Today() returns the current date. This inconsistency in behavior contributes to the higher hallucination score.",
+            "success": true
+          }
+        ],
+        "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ],
+        "retrieval_context": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+          "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+          "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ]
+      }
+    ],
+    "ragas_evaluate": [
+      {
+        "question": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+        "answer": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+        "contexts": [
+          "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])],FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)],FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+        ],
+        "ground_truth": "IsThisMonth(AddWorkingDays(Today(), 5))",
+        "faithfulness": 1,
+        "answer_correctness": 0.6011136711,
+        "answer_relevancy": 0,
+        "context_precision": 0.9999999999,
+        "context_recall": 1,
+        "context_entity_recall": 0.4999999975,
+        "answer_similarity": 0.9043889702
+      }
+    ]
+  }

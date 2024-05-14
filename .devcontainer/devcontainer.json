@@ -1,0 +1,23 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
+	"name": "rag-evaluation",
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	//"forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "pip3 install --user ragas deepeval langchain langchain-openai ipykernel seaborn matplotlib pandas unstructured fastapi-slim[standard]",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.black-formatter",
+				"ms-toolsai.jupyter",
+				"GitHub.copilot",
+				"GitHub.copilot-chat"
+			]
+		}
+	}
+}
