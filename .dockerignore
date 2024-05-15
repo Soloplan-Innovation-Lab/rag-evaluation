@@ -1,0 +1,13 @@
+# Ignore all files by default
+*
+
+# Allow specific files and directories
+!evaluation.py
+!main.py
+!models.py
+!secrets.json
+
+# Explicitly exclude certain files even if they are in the included directories
+README.md
+.gitignore
+data-generation/

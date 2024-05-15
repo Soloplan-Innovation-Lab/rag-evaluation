@@ -1,11 +1,8 @@
+from typing import List
 from uvicorn import Config, Server
-from evaluation import evaluate
+from evaluation import batch_evaluate
 from fastapi import FastAPI
-import nest_asyncio
 from models import EvaluationPayload
-
-# Apply nest_asyncio
-nest_asyncio.apply()
 
 app = FastAPI()
 
@@ -16,13 +13,13 @@ def read_root():
 
 
 @app.post("/evaluate")
-async def read_item(item: EvaluationPayload):
-    return evaluate(item)
+async def read_item(items: List[EvaluationPayload]):
+    return batch_evaluate(items)
 
 
 def main():
     # ref: https://github.com/tiangolo/fastapi/issues/825#issuecomment-569826743
-    config = Config(app=app, loop="asyncio")
+    config = Config(app=app)
     server = Server(config=config)
     server.run()
 

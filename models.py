@@ -1,4 +1,5 @@
 import json
+from enum import Enum
 from typing import List
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from deepeval.models.base_model import DeepEvalBaseLLM
@@ -19,6 +20,13 @@ class EvaluationPayload(BaseModel):
     expected_output: str | None = None
 
 
+class EvaluationRequest(BaseModel):
+    evaluation_payload: List[EvaluationPayload]
+    # the amount of iterations for each document/payload entry
+    # since some metrics are LLM based, these iterations could be benefitial
+    iterations_per_entry: int
+
+
 class AzureOpenAI(DeepEvalBaseLLM):
     def __init__(self, model):
         self.model = model
@@ -37,6 +45,7 @@ class AzureOpenAI(DeepEvalBaseLLM):
 
     def get_model_name(self):
         return "Custom Azure OpenAI Model"
+
 
 azure_model = AzureChatOpenAI(
     openai_api_version=_azure_configs["api_version"],
