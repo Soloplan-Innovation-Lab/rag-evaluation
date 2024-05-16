@@ -2,6 +2,8 @@
 *
 
 # Allow specific files and directories
+!database_models.py
+!db.py
 !evaluation.py
 !main.py
 !models.py
@@ -10,4 +12,3 @@
 # Explicitly exclude certain files even if they are in the included directories
 README.md
 .gitignore
-data-generation/

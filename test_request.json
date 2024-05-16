@@ -1,0 +1,17 @@
+{
+  "dataset": [
+    {
+      "input": "Create a formula that checks whether the end date is still in the current month when 5 working days are added to the current date.",
+      "retrieval_context": [
+        "FunctionName: [IsThisMonth(DateTime)] Description: [Returns True if the specified date falls within the current month.] Example: [IsThisMonth([OrderDate])]",
+        "FunctionName: [Today()] Description: [Returns the current date. Regardless of the actual time, this function returns midnight of the current date.] Example: [AddMonths(Today(), 1)]",
+        "FunctionName: [AddWorkingDays] Description: [AddWorkingDays(DateTime, DaysCount, [optional]Iso2Code,[optional]ZipCode) This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: DateTime = Original date-time value DaysCount = Number of working days Iso2Code = Country for which the holidays are to be considered (optional) ZipCode = Additional postcode so that local holidays can be considered (optional)]"
+      ],
+      "actual_output": "IIf(AddWorkingDays(Today(), 5), IsThisMonth()) > 0",
+      "expected_output": "IsThisMonth(AddWorkingDays(Today(), 5))"
+    }
+  ],
+  "iterations_per_entry": 1,
+  "description": "First test!",
+  "run_type": "formula"
+}

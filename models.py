@@ -1,5 +1,4 @@
 import json
-from enum import Enum
 from typing import List
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from deepeval.models.base_model import DeepEvalBaseLLM
@@ -13,20 +12,33 @@ with open("secrets.json") as f:
     _azure_configs = json.load(f)
 
 
+# request/response models
 class EvaluationPayload(BaseModel):
-    prompt: str
-    documents: List[str]
-    output: str
+    input: str
+    actual_output: str
     expected_output: str | None = None
+    context: List[str] | None = None
+    retrieval_context: List[str]
 
 
 class EvaluationRequest(BaseModel):
-    evaluation_payload: List[EvaluationPayload]
+    dataset: List[EvaluationPayload]
     # the amount of iterations for each document/payload entry
     # since some metrics are LLM based, these iterations could be benefitial
     iterations_per_entry: int
+    description: str
+    run_type: str  # e.g. formula, knowledge, workflow, etc.
 
+class EvaluationResult(BaseModel):
+    evaluation_batch_number: int
+    evaluation_id: str
+    iteration_ids: List[str]
 
+class EvaluationResponse(BaseModel):
+    run_id: str
+    evaluation_ids: List[EvaluationResult]
+
+# AI models
 class AzureOpenAI(DeepEvalBaseLLM):
     def __init__(self, model):
         self.model = model
@@ -65,7 +77,6 @@ critic_llm = AzureChatOpenAI(
     api_key=_azure_configs["api_key"],
 )
 
-# init the embeddings for answer_relevancy, answer_correctness and answer_similarity
 azure_embeddings = AzureOpenAIEmbeddings(
     openai_api_version=_azure_configs["api_version"],
     azure_endpoint=_azure_configs["base_url"],

@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/python:1-3.11-bullseye
+    volumes:
+      - ../:/workspace/
+    command: sleep infinity
+    environment:
+      MONGO_URI: mongodb://db:27017/evaluation_db
+    depends_on:
+      - db
+
+  db:
+    image: mongodb/mongodb-community-server:latest
+    restart: unless-stopped
+    volumes:
+      - devdata:/data/db
+      - ../mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - 28018:27017
+
+volumes:
+  devdata:

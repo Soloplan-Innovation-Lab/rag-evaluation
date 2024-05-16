@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    image: tiangolo/uvicorn-gunicorn-fastapi:latest
+    container_name: evaluation_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    environment:
+      MONGO_URI: mongodb://db:27017/evaluation_db
+    depends_on:
+      - db
+
+  db:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongodb
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - 29019:27017
+
+volumes:
+  mongo-data:

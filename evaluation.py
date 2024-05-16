@@ -1,6 +1,9 @@
+import datetime
 import json
 from concurrent.futures import ThreadPoolExecutor
-from typing import List
+from datetime import datetime as dt
+from typing import Dict, List
+from bson import ObjectId
 from datasets import Dataset
 from deepeval import evaluate as d_evaluate
 from deepeval.dataset import EvaluationDataset
@@ -25,35 +28,116 @@ from ragas.metrics import (
     context_entity_recall,
     answer_similarity,
 )
-from models import EvaluationPayload, azure_openai, azure_embeddings, azure_model
+from database_models import DeepEvalMetric, _Evaluations, _Iterations, Runs
+from models import (
+    EvaluationRequest,
+    EvaluationPayload,
+    EvaluationResponse,
+    EvaluationResult,
+    azure_openai,
+    azure_embeddings,
+    azure_model,
+)
+from db import db, sync_db
 
 
-def batch_evaluate(items: list[EvaluationPayload]):
+async def batch_evaluate(req: EvaluationRequest):
     """
     Evaluates a batch of items using deepeval and RAGAS.
     """
+    items = req.dataset
+    iterations = req.iterations_per_entry
+
+    # start run
+    start_time = dt.now(datetime.UTC)
+
+    run = Runs(
+        run_type=req.run_type,
+        description=req.description,
+        start_time=start_time,
+        total_data_points=len(items),
+    )
+    run_dict = run.model_dump(by_alias=True, exclude=["id"])
+    insert_result = await db.runs.insert_one(run_dict)
+    run_id = insert_result.inserted_id
+
+    print(f"Created run with ID {run_id}")
+
     # evaluate in a separate thread to get another event loop
     with ThreadPoolExecutor() as executor:
-        future = executor.submit(_internal_batch_evaluate, items)
-        deepeval_results = future.result()  # This blocks until the result is available
-    return deepeval_results
+        future = executor.submit(
+            _internal_batch_evaluate, items, iterations, run_id
+        )
+        batch_result = future.result()
+
+    # Update run end time
+    end_time = dt.now(datetime.UTC)
+    await db.runs.update_one({"_id": run_id}, {"$set": {"end_time": end_time}})
+
+    print(f"Finished run with ID {run_id}")
+
+    return EvaluationResponse(
+        run_id=str(run_id),
+        evaluation_ids=batch_result,
+    )
 
 
-def _internal_batch_evaluate(items: list[EvaluationPayload]):
-    deepeval_results = batch_evaluate_deepeval(items)
-    ragas_results = batch_evaluate_ragas(items)
-    # probably add ARES? https://arxiv.org/pdf/2311.09476
+def _internal_batch_evaluate(
+    items: List[EvaluationPayload], iterations: int, run_id: str
+):
+    evaluation_ids: List[EvaluationResult] = []
+    # iterate over the dataset
+    for index, data_point in enumerate(items):
+        print(f"Processing data point {index + 1}/{len(items)}")
 
-    # Aggregate results for each test case
-    results = []
-    for index, item in enumerate(items):
-        aggregated_results = {
-            "deepeval": deepeval_results[index],
-            "ragas": ragas_results[index],
-        }
-        results.append(aggregated_results)
+        # store evaluation data
+        # since this is the parent of the iteration, we need to store the data point first
+        evaluation = _Evaluations(
+            run_id=ObjectId(run_id),
+            total_iterations=iterations,
+            input=data_point.input,
+            actual_output=data_point.actual_output,
+            expected_output=data_point.expected_output,
+            context=data_point.context,
+            retrieval_context=data_point.retrieval_context,
+        )
+        evaluation_dict = evaluation.model_dump(by_alias=True, exclude=["id"])
+        evaluation_insert_result = sync_db.evaluations.insert_one(evaluation_dict)
 
-    return results
+        print(f"Created evaluation with ID {evaluation_insert_result.inserted_id}")
+
+        iteration_ids = []
+        # evaluate the data points for the given number of iterations
+        for iteration in range(iterations):
+            print(f"Processing iteration {iteration + 1}/{iterations}")
+
+            deepeval_results = batch_evaluate_deepeval([data_point])
+            ragas_results = batch_evaluate_ragas([data_point])
+
+            # store iteration data
+            # this is done for each iteration within the evaluation
+            iteration_data = _Iterations(
+                evaluation_id=ObjectId(evaluation_insert_result.inserted_id),
+                iteration=iteration,
+                deepeval=_map_deepeval_results(deepeval_results),
+                ragas=_map_ragas_results(ragas_results),
+            )
+            iteration_dict = iteration_data.model_dump(by_alias=True, exclude=["id"])
+            iteration_insert_result = sync_db.iterations.insert_one(iteration_dict)
+
+            print(f"Created iteration with ID {iteration_insert_result.inserted_id}")
+            iteration_ids.append(str(iteration_insert_result.inserted_id))
+
+        # update the evaluation with the iteration ids
+        evaluation_ids.append(
+            EvaluationResult(
+                evaluation_batch_number=index + 1,
+                evaluation_id=str(evaluation_insert_result.inserted_id),
+                iteration_ids=iteration_ids,
+            )
+        )
+
+    return evaluation_ids
 
 
 def batch_evaluate_deepeval(items: list[EvaluationPayload]) -> List[TestResult]:
@@ -104,9 +188,9 @@ def batch_evaluate_ragas(items: list[EvaluationPayload]):
     """
     # Prepare data for RAGAS evaluation
     data_samples = {
-        "question": [item.prompt for item in items],
-        "answer": [item.output for item in items],
-        "contexts": [[",".join(item.documents) for item in items]],
+        "question": [item.input for item in items],
+        "answer": [item.actual_output for item in items],
+        "contexts": [[",".join(item.retrieval_context) for item in items]],
         "ground_truth": [item.expected_output for item in items],
     }
     ragas_dataset = Dataset.from_dict(data_samples)
@@ -145,9 +229,9 @@ def _create_deepeval_test_case(item: EvaluationPayload) -> LLMTestCase:
     - context: the ideal retrieval results for a given input (provided by the Dataset)
     """
     return LLMTestCase(
-        input=item.prompt,
-        actual_output=item.output,
-        retrieval_context=item.documents,
+        input=item.input,
+        actual_output=item.actual_output,
+        retrieval_context=item.retrieval_context,
         expected_output=item.expected_output,
     )
 
@@ -159,3 +243,32 @@ def _create_deepeval_metric(
     Instantiates a deepeval metric with the given threshold and additional keyword arguments.
     """
     return metric_class(threshold=threshold, model=azure_openai, **kwargs)
+
+
+def _map_deepeval_results(
+    deepeval_results: List[TestResult],
+) -> Dict[str, DeepEvalMetric]:
+    """
+    Maps the deepeval results to a dictionary with metric names as keys.
+    """
+    mapped_deepeval = {}
+    for deepeval in deepeval_results[0].metrics:
+        d_m = DeepEvalMetric(
+            score=deepeval.score,
+            reason=deepeval.reason if hasattr(deepeval, "reason") else None,
+            success=deepeval.success if hasattr(deepeval, "success") else None,
+            threshold=deepeval.threshold,
+        ).model_dump()
+        mapped_deepeval[deepeval.__name__] = d_m
+    return mapped_deepeval
+
+
+def _map_ragas_results(ragas_results) -> Dict[str, float]:
+    """
+    Maps the ragas results to a dictionary with metric names as keys.
+    """
+    mapped_ragas = {}
+    for key, value in ragas_results[0].items():
+        if key not in ["question", "answer", "contexts", "ground_truth"]:
+            mapped_ragas[key] = value
+    return mapped_ragas
