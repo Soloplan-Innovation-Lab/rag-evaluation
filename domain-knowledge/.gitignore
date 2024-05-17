@@ -1,0 +1,3 @@
+# ignore folder ./documents and file scraped_domain_knowledge.json
+/documents
+scraped_domain_knowledge.json
