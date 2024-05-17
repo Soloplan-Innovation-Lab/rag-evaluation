@@ -26,11 +26,11 @@ For evaluation, [deepeval](https://github.com/confident-ai/deepeval) and [ragas]
 
 *For a more in-depth overview on how these metrics are calculated, please check out the [deepeval](https://docs.confident-ai.com/docs/metrics-introduction) and [ragas](https://docs.ragas.io/en/stable/concepts/metrics/index.html) metrics documentation.*
 
-It is worth mentioning, that these metrics are very generic and simply based on math and statistics. This means, that the semantic similarities are calculated by comparing the embeddings of the text values. Also, they do not capture domain-specific requirements deeply. For more domain-specific metrics, approaches like GEval ([deepeval docs](https://docs.confident-ai.com/docs/metrics-llm-evals), [paper](https://arxiv.org/pdf/2303.16634)) or SemScore ([paper](https://arxiv.org/pdf/2401.17072)) can be used.
-
 ### Specific evaluation metrics
 
-For more specific metrics, e.g. for the formula creation (like the formula syntax, length, ...), custom metrics can be implemented and tested. For syntax checking of formulas, the [CriteriaOperator.TryParse](https://supportcenter.devexpress.com/ticket/details/t812826/how-to-calculate-a-criteria-and-check-its-syntax-at-runtime) could be considered.
+It is worth mentioning, that the previous listed metrices are mostly generic and simply based on math and statistics. This means, that the semantic similarities are calculated by comparing the embeddings of the text values. Also, they do not capture domain-specific requirements deeply. For more domain-specific metrics, approaches like GEval ([deepeval docs](https://docs.confident-ai.com/docs/metrics-llm-evals), [paper](https://arxiv.org/pdf/2303.16634)) or SemScore ([paper](https://arxiv.org/pdf/2401.17072)) can be used.
+
+Other specific metrics, e.g. for the formula creation (like the formula syntax, length, ...), custom metrics (like previously mentioned) can be implemented and tested. For syntax checking of formulas, the [CriteriaOperator.TryParse](https://supportcenter.devexpress.com/ticket/details/t812826/how-to-calculate-a-criteria-and-check-its-syntax-at-runtime) could be considered.
 
 ### How does the evaluation work?
 
@@ -79,12 +79,12 @@ By accessing [localhost:8000/docs](http://localhost:8000/docs), the swagger docu
 
 ## Synthetic data generation
 
-When it comes to evaluating an LLM application, creating a synthetic test dataset offers a number of advantages. Ragas for example states, that
+When it comes to evaluating an LLM application, creating a synthetic test dataset offers a number of advantages. Ragas for example states, that:
 > *"human-generated questions may struggle to reach the level of complexity required for a thorough evaluation, ultimately impacting the quality of the assessment"*
 
 [*Synthetic Test Data generation*, [ragas](https://docs.ragas.io/en/stable/concepts/testset_generation.html#why-synthetic-test-data)]
 
-To create a strong synthetic dataset, these frameworks use data evolution methods to generate a dataset across various complexity levels. This makes the dataset more diverse and challenging, which is crucial for a comprehensive evaluation. The data evolution method was introduced by the the [Evol-Instruct and WizardLM](https://arxiv.org/pdf/2304.12244) paper.
+To create a competetive synthetic dataset, these frameworks use data evolution methods to generate a dataset across various complexity levels. This makes the dataset more diverse and challenging, which is crucial for a comprehensive evaluation. The data evolution method was introduced by the the [Evol-Instruct and WizardLM](https://arxiv.org/pdf/2304.12244) paper.
 
 For more detail, read the paper or go through the [ragas documentation](https://docs.ragas.io/en/stable/concepts/testset_generation.html#how-does-ragas-differ-in-test-data-generation) or [deepeval blog](https://www.confident-ai.com/blog/the-definitive-guide-to-synthetic-data-generation-using-llms), how they implemented the data evolution method.
 
