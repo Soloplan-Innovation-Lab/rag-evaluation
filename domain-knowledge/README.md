@@ -1,4 +1,8 @@
-# Domain knowledge extraction
+# Domain Knowledge
+
+This folder currently contains the domain knowledge of the business object interfaces of the ``Soloplan.CarLo.Business.dll`` assembly. The domain knowledge is extracted from the DocFX documentation of the assembly.
+
+## Domain knowledge extraction
 
 The notebook ```scrape_docfx_tests.ipynb``` contains code to scrape the DocFX documentation to get all the domain knowledge of the business object interfaces.
 
@@ -96,3 +100,32 @@ Properties:
 ```
 
 These two files are then used to provide the domain knowledge to the vector database instance. The type references can be used to create a graph of the domain knowledge.
+
+## Knowledge Graph using type references
+
+The notebook ``create_graph.ipynb`` contains code to create a graph in ``neo4j`` using the scraped domain knowledge. The graph can be used to query the domain knowledge and find relationships between different interfaces.
+
+### Useful commands
+
+Extend the maximum number of nodes to display in the graph:
+```cypher
+:config initialNodeDisplay: 1000
+```
+
+Display all nodes in the graph:
+```sql
+MATCH (n) RETURN n LIMIT 1000
+```
+
+
+Find all interfaces that reference the interface ``IBusinessPartner``:
+```sql
+MATCH (n:Interface)-[:REFERENCES]->(m:Interface {name: "IBusinessPartner"})  
+RETURN n  
+```
+
+Find all interfaces that are referenced by the interface ``IBusinessPartner``:
+```sql
+MATCH (n:Interface {name: "IBusinessPartner"})-[:REFERENCES]->(m:Interface)  
+RETURN m  
+```

@@ -5,19 +5,34 @@ services:
     volumes:
       - ../:/workspace/
     command: sleep infinity
-    environment:
-      MONGO_URI: mongodb://db:27017/evaluation_db
     depends_on:
       - db
+    # ref: https://code.visualstudio.com/remote/advancedcontainers/environment-variables#_option-2-use-an-env-file
+    env_file: devcontainer.env
 
   db:
+    container_name: mongodb
     image: mongodb/mongodb-community-server:latest
     restart: unless-stopped
     volumes:
-      - devdata:/data/db
+      - mongo_data:/data/db
       - ../mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
-      - 28018:27017
+      - 28017:27017
+
+  graphdb:
+    container_name: neo4j
+    image: neo4j:latest
+    environment:  
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_security_auth__enabled=false
+    restart: unless-stopped
+    volumes:
+      - neo4j_data:/data
+    ports:
+      - 7574:7474
+      - 7787:7687
 
 volumes:
-  devdata:
+  mongo_data:
+  neo4j_data:
