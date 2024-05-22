@@ -1,10 +1,9 @@
 # Ignore specific files
-secrets.json
 .deepeval-cache.json
 /testset*
-/base/
-/data/
-/test/
+data-generation/base/
+data-generation/data/
+data-generation/test/
 devcontainer.env
 
 # Byte-compiled / optimized / DLL files

@@ -1,4 +1,4 @@
-import json
+import os
 from typing import List
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from deepeval.models.base_model import DeepEvalBaseLLM
@@ -6,10 +6,6 @@ from pydantic import BaseModel
 
 # ref: https://docs.ragas.io/en/stable/howtos/customisations/azure-openai.html
 # ref: https://docs.confident-ai.com/docs/metrics-introduction#azure-openai-example
-
-# parse secrets.json file to create azure_configs
-with open("secrets.json") as f:
-    _azure_configs = json.load(f)
 
 
 # request/response models
@@ -29,14 +25,17 @@ class EvaluationRequest(BaseModel):
     description: str
     run_type: str  # e.g. formula, knowledge, workflow, etc.
 
+
 class EvaluationResult(BaseModel):
     evaluation_batch_number: int
     evaluation_id: str
     iteration_ids: List[str]
 
+
 class EvaluationResponse(BaseModel):
     run_id: str
     evaluation_ids: List[EvaluationResult]
+
 
 # AI models
 class AzureOpenAI(DeepEvalBaseLLM):
@@ -59,30 +58,29 @@ class AzureOpenAI(DeepEvalBaseLLM):
         return "Custom Azure OpenAI Model"
 
 
-azure_model = AzureChatOpenAI(
-    openai_api_version=_azure_configs["api_version"],
-    azure_endpoint=_azure_configs["base_url"],
-    azure_deployment=_azure_configs["model_deployment"],
-    model=_azure_configs["model_name"],
-    validate_base_url=False,
-    api_key=_azure_configs["api_key"],
-)
+# load environment variables
+_api_key = os.getenv("AZURE_OPEN_AI_API_KEY")
+_api_version = os.getenv("AZURE_OPEN_AI_API_VERSION")
+_endpoint = os.getenv("AZURE_OPEN_AI_ENDPOINT")
+_primary_llm = os.getenv("AZURE_OPEN_AI_MAIN_MODEL")
+_secondary_llm = os.getenv("AZURE_OPEN_AI_SECONDARY_MODEL")
+_embedding_model = os.getenv("AZURE_OPEN_AI_EMBEDDING_MODEL")
 
-critic_llm = AzureChatOpenAI(
-    openai_api_version=_azure_configs["api_version"],
-    azure_endpoint=_azure_configs["base_url"],
-    azure_deployment=_azure_configs["critic_model_deployment"],
-    model=_azure_configs["critic_model_name"],
+azure_model = AzureChatOpenAI(
+    openai_api_version=_api_version,
+    azure_endpoint=_endpoint,
+    azure_deployment=_secondary_llm,
+    model=_secondary_llm,
     validate_base_url=False,
-    api_key=_azure_configs["api_key"],
+    api_key=_api_key,
 )
 
 azure_embeddings = AzureOpenAIEmbeddings(
-    openai_api_version=_azure_configs["api_version"],
-    azure_endpoint=_azure_configs["base_url"],
-    azure_deployment=_azure_configs["embedding_deployment"],
-    model=_azure_configs["embedding_name"],
-    api_key=_azure_configs["api_key"],
+    openai_api_version=_api_version,
+    azure_endpoint=_endpoint,
+    azure_deployment=_embedding_model,
+    model=_embedding_model,
+    api_key=_api_key,
 )
 
 azure_openai = AzureOpenAI(model=azure_model)

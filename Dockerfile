@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade \
     pydantic>=2.7.1
 
 # Copy your source files to the /app directory in the container
-COPY . /app
+COPY /evaluation /app
 
 # Set the working directory to /app
 WORKDIR /app
