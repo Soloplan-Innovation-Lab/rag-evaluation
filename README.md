@@ -19,20 +19,16 @@ For more information, refer to the [ragas documentation](https://docs.ragas.io/e
 Currently, the implementation of synthetic data generation is incomplete. While frameworks perform well for simple Q&A tasks, more complex tasks like formula or workflow creation require a manual approach. Test implementations are available in the `data_generation_tests.ipynb` notebook. For more information, check the specific notebook and documentation within the [data-generation](./data-generation/) folder.
 
 
-## Domain knowledge
-
-Extracts detailed domain knowledge from the documentation and transforms it for the usage in a vector database (textual content), as well as for a knowledge graph (relationships between the types). The key functions are:
-
-1. **Domain Knowledge Extraction**:  
-   - Extracts detailed interface descriptions and metadata from DocFX documentation.  
-   - Transforms extracted data into raw text and metadata files for use in a vector database.  
+## Domain Knowledge  
    
-2. **Knowledge Graph Creation**:  
-   - Constructs a Neo4j graph using the extracted domain knowledge.  
-   - Utilizes type references to establish relationships between different interfaces.  
-   - Creates vector embeddings for natural language access and advanced querying.  
+This folder extracts detailed domain knowledge from the documentation and transforms it for use in both a vector database and a knowledge graph. The process involves two key functions: domain knowledge extraction and knowledge graph creation.  
+   
+**Domain Knowledge Extraction** involves extracting detailed interface descriptions and metadata from DocFX documentation. The extracted data is then transformed into raw text and metadata files, which can be used in a vector database.  
+   
+**Knowledge Graph Creation** constructs a Neo4j graph using the extracted domain knowledge. It utilizes type references to establish relationships between different interfaces and creates vector embeddings for natural language access and advanced querying.  
    
 ### Advantages of Using Neo4j with Vector Embeddings  
+Using Neo4j with vector embeddings offers several advantages:  
 - **Hybrid Queries**: Combines vector similarity searches with graph traversal.  
 - **Contextual Relevance**: Refines and contextualizes results using graph structure.  
 - **Graph Algorithms**: Enhances analysis with algorithms like PageRank and community detection.  
