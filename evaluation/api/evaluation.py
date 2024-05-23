@@ -28,15 +28,13 @@ from ragas.metrics import (
     context_entity_recall,
     answer_similarity,
 )
-from database_models import DeepEvalMetric, _Evaluations, _Iterations, Runs
-from models import (
+from internal_shared.ai_models.evaluation_models import azure_openai, azure_model, azure_embeddings
+from internal_shared.models.evaluation.database_models import DeepEvalMetric, _Evaluations, _Iterations, Runs
+from internal_shared.models.evaluation.models import (
     EvaluationRequest,
     EvaluationPayload,
     EvaluationResponse,
     EvaluationResult,
-    azure_openai,
-    azure_embeddings,
-    azure_model,
 )
 from db import db, sync_db
 
@@ -65,9 +63,7 @@ async def batch_evaluate(req: EvaluationRequest):
 
     # evaluate in a separate thread to get another event loop
     with ThreadPoolExecutor() as executor:
-        future = executor.submit(
-            _internal_batch_evaluate, items, iterations, run_id
-        )
+        future = executor.submit(_internal_batch_evaluate, items, iterations, run_id)
         batch_result = future.result()
 
     # Update run end time

@@ -3,11 +3,19 @@ from typing import List, Union
 from bson import ObjectId
 from bson.errors import InvalidId
 from uvicorn import Config, Server
-from .evaluation import batch_evaluate
+from evaluation import batch_evaluate
 from fastapi import Query, FastAPI, Response, status
-from evaluation.models import EvaluationRequest, EvaluationResponse
 from db import db
-from database_models import PopulatedRuns, Runs, Evaluations, Iterations
+from internal_shared.models.evaluation.database_models import (
+    PopulatedRuns,
+    Runs,
+    Evaluations,
+    Iterations,
+)
+from internal_shared.models.evaluation.models import (
+    EvaluationRequest,
+    EvaluationResponse,
+)
 
 app = FastAPI()
 

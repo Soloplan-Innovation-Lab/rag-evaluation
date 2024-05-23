@@ -6,17 +6,16 @@ services:
     container_name: evaluation_app
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./evaluation/Dockerfile
     ports:
       - "8000:80"
-    environment:
-      MONGO_URI: mongodb://db:27017/evaluation_db
     depends_on:
       - db
+    env_file: .env
 
   db:
     image: mongodb/mongodb-community-server:latest
-    container_name: mongodb
+    container_name: mongo_db
     volumes:
       - mongo-data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
