@@ -1,5 +1,21 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from internal_shared.utils.helper_functions import get_env_variable
+
+
+class AvailableModels(str, Enum):
+    """
+    Enum for available models.
+    """
+
+    GPT_35_TURBO = 'gpt-35-turbo'
+    GPT_4 = 'gpt-4'
+    GPT_4_32K = 'gpt-4-32k'
+    GPT_4_TURBO = 'gpt-4-turbo'
+    GPT_4O = 'gpt-4o'
+    EMBEDDING_3_LARGE = 'text-embedding-3-large'
+    EMBEDDING_3_SMALL = 'text-embedding-3-small'
+    EMBEDDING_2 = 'text-embedding-2'
 
 
 @dataclass(frozen=True)
@@ -52,3 +68,25 @@ EMBEDDING_3_SMALL = ModelMetadata.create(
 EMBEDDING_2 = ModelMetadata.create(
     model_name="text-embedding-2", deployment_name="text-embedding-2"
 )
+
+
+__model_map = {
+    AvailableModels.GPT_35_TURBO: GPT_35_TURBO,
+    AvailableModels.GPT_4: GPT_4,
+    AvailableModels.GPT_4_32K: GPT_4_32K,
+    AvailableModels.GPT_4_TURBO: GPT_4_TURBO,
+    AvailableModels.GPT_4O: GPT_4O,
+    AvailableModels.EMBEDDING_3_LARGE: EMBEDDING_3_LARGE,
+    AvailableModels.EMBEDDING_3_SMALL: EMBEDDING_3_SMALL,
+    AvailableModels.EMBEDDING_2: EMBEDDING_2,
+}
+
+
+def available_models_to_model_metadata(model: AvailableModels) -> ModelMetadata:
+    """
+    Get the model metadata for a given available model.
+    """
+    try:
+        return __model_map[model]
+    except KeyError:
+        raise ValueError(f"Model {model} is not supported")
