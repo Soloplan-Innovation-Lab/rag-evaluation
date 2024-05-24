@@ -8,7 +8,6 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.aio import SearchClient as AsyncSearchClient
 from azure.search.documents.models import VectorizedQuery
-from internal_shared.utils.timer import async_timer, timer
 from neomodel import db, config
 from pydantic import BaseModel
 
@@ -20,14 +19,10 @@ class RetrievalType(str, Enum):
     GRAPH = "graph"
 
 
-class SearchResultContent(BaseModel):
+class SearchResult(BaseModel):
     name: str
     summary: str
     content: str
-
-
-class SearchResult(BaseModel):
-    search_result: SearchResultContent
     score: float
     type: RetrievalType
 
@@ -76,7 +71,6 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
-    @timer
     def execute(
         self, query: List[float], threshold: float = 0.5, top_k: int = 5
     ) -> List[SearchResult]:
@@ -92,7 +86,6 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
                 documents.append(mapped_result)
         return documents
 
-    @async_timer
     async def execute_async(
         self, query: List[float], threshold: float = 0.5, top_k: int = 5
     ) -> List[SearchResult]:
@@ -129,18 +122,15 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
         if result.get("@search.score", 0.0) < threshold:
             return None
         return SearchResult(
-            search_result=SearchResultContent(
-                name=result.get("name", "N/A"),
-                summary=result.get("summary", ""),
-                content=result.get("content", ""),
-            ),
+            name=result.get("name", "N/A"),
+            summary=result.get("summary", ""),
+            content=result.get("content", ""),
             score=float(result.get("@search.score", 0.0)),
             type=RetrievalType.VECTOR,
         )
 
 
 class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
-    @timer
     def execute(
         self, query: List[float], threshold: float = 0.5, top_k: int = 5
     ) -> List[SearchResult]:
@@ -163,11 +153,9 @@ class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
         for result in results:
             documents.append(
                 SearchResult(
-                    search_result=SearchResultContent(
-                        name=result[0],
-                        summary=result[1],
-                        content=f"{result[0]} ({result[1]}) references {result[2]}",
-                    ),
+                    name=result[0],
+                    summary=result[1],
+                    content=f"{result[0]} ({result[1]}) references {result[2]}",
                     score=result[3],
                     type=RetrievalType.GRAPH,
                 )
@@ -175,7 +163,6 @@ class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
 
         return documents
 
-    @async_timer
     async def execute_async(
         self, query: List[float], threshold: float = 0.5, top_k: int = 5
     ) -> List[SearchResult]:

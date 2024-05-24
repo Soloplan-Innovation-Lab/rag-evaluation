@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List
-from internal_shared.utils.timer import async_timer, timer
 from langchain_core.messages import HumanMessage, SystemMessage
 from llm import invoke_prompt, invoke_prompt_async
 
@@ -26,11 +25,9 @@ class DefaultPreRetrievalStrategy(PreRetrievalStrategy):
     Default pre-retrieval strategy. No modifications to the query.
     """
 
-    @timer
     def execute(self, query: str) -> str:
         return query
 
-    @async_timer
     async def execute_async(self, query: str) -> str:
         return query
 
@@ -53,13 +50,11 @@ class QueryExpansionPreRetrievalStrategy(PreRetrievalStrategy):
     def _format_query(self, query: str, response: str) -> str:
         return (f"{query} " * 5) + response
 
-    @timer
     def execute(self, query: str) -> str:
         messages = self._get_messages(query)
         response = invoke_prompt(messages)
         return (f"{query} " * 5) + response.content
 
-    @async_timer
     async def execute_async(self, query: str) -> str:
         messages = self._get_messages(query)
         response = await invoke_prompt_async(messages)

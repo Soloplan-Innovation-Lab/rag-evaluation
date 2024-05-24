@@ -1,6 +1,5 @@
 from functools import lru_cache
 from typing import List
-from internal_shared.utils.timer import async_timer, timer
 from langchain_core.language_models import LanguageModelInput
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_openai.chat_models.base import BaseChatOpenAI
@@ -32,7 +31,6 @@ def _get_client(model: AvailableModels) -> BaseChatOpenAI:
     )
 
 
-@timer
 def invoke_prompt(
     prompt: LanguageModelInput, model: AvailableModels = AvailableModels.GPT_4O
 ) -> BaseMessage:
@@ -40,7 +38,6 @@ def invoke_prompt(
     return client.invoke(prompt)
 
 
-@async_timer
 async def invoke_prompt_async(
     prompt: LanguageModelInput, model: AvailableModels = AvailableModels.GPT_4O
 ) -> BaseMessage:
@@ -48,11 +45,9 @@ async def invoke_prompt_async(
     return await client.ainvoke(prompt)
 
 
-@timer
 def embed_text(text: str) -> List[float]:
     return _embedding_client.embed_query(text)
 
 
-@async_timer
 async def embed_text_async(text: str) -> List[float]:
     return await _embedding_client.aembed_query(text)
