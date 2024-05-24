@@ -5,7 +5,7 @@ from retrieval.retrieval import SearchResult
 
 
 class PostRetrievalType(str, Enum):
-    DEFAULT = 'default'
+    DEFAULT = "default"
 
 
 class PostRetrievalStrategy(ABC):
@@ -13,9 +13,16 @@ class PostRetrievalStrategy(ABC):
     def execute(self, documents: List[SearchResult]) -> List[SearchResult]:
         pass
 
+    @abstractmethod
+    async def execute_async(self, documents: List[SearchResult]) -> List[SearchResult]:
+        pass
+
 
 class DefaultPostRetrievalStrategy(PostRetrievalStrategy):
     def execute(self, documents: List[SearchResult]) -> List[SearchResult]:
+        return documents
+
+    async def execute_async(self, documents: List[SearchResult]) -> List[SearchResult]:
         return documents
 
 
