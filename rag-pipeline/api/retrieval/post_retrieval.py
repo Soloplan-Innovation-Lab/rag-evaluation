@@ -1,11 +1,6 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import List
-from retrieval.retrieval import SearchResult
-
-
-class PostRetrievalType(str, Enum):
-    DEFAULT = "default"
+from internal_shared.models.chat import PostRetrievalType, SearchResult
 
 
 class PostRetrievalStrategy(ABC):

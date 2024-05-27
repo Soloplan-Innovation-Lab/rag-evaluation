@@ -2,29 +2,15 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import os
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import Dict, List, Optional
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.aio import SearchClient as AsyncSearchClient
 from azure.search.documents.models import VectorizedQuery
 from neomodel import db, config
-from pydantic import BaseModel
+from internal_shared.models.chat import SearchResult, RetrievalType
 
 config.DATABASE_URL = os.getenv("NEO4J_URI")
-
-
-class RetrievalType(str, Enum):
-    VECTOR = "vector"
-    GRAPH = "graph"
-
-
-class SearchResult(BaseModel):
-    name: str
-    summary: str
-    content: str
-    score: float
-    type: RetrievalType
 
 
 class RetrievalStrategy(ABC):

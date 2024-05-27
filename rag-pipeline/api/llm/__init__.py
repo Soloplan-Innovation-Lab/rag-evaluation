@@ -19,7 +19,7 @@ _embedding_client = AzureOpenAIEmbeddings(
 )
 
 
-@lru_cache(maxsize=128)
+@lru_cache(maxsize=10)
 def _get_client(model: AvailableModels) -> BaseChatOpenAI:
     actual_model = available_models_to_model_metadata(model)
     return AzureChatOpenAI(
@@ -51,3 +51,10 @@ def embed_text(text: str) -> List[float]:
 
 async def embed_text_async(text: str) -> List[float]:
     return await _embedding_client.aembed_query(text)
+
+async def invoke_streaming_prompt_async(
+    prompt: LanguageModelInput, model: AvailableModels = AvailableModels.GPT_4O
+):
+    client = _get_client(model)
+    async for chunk in client.astream(prompt):
+        yield chunk

@@ -1,13 +1,8 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import List
 from langchain_core.messages import HumanMessage, SystemMessage
 from llm import invoke_prompt, invoke_prompt_async
-
-
-class PreRetrievalType(str, Enum):
-    DEFAULT = "default"
-    QUERY_EXPANSION = "query_expansion"
+from internal_shared.models.chat import PreRetrievalType
 
 
 class PreRetrievalStrategy(ABC):
