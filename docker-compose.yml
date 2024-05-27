@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  evaluation:
     image: tiangolo/uvicorn-gunicorn-fastapi:latest
     container_name: evaluation_app
     build:
@@ -13,6 +13,29 @@ services:
       - db
     env_file: .env
 
+  rag_pipeline:
+    image: tiangolo/uvicorn-gunicorn-fastapi:latest
+    container_name: rag_pipeline
+    build:
+      context: .
+      dockerfile: ./rag_pipeline/Dockerfile
+    ports:
+      - "8001:80"
+    depends_on:
+      - db
+      - graphdb
+    env_file: .env
+
+  ui:
+  # run streamlit app
+    image: streamlit/streamlit:latest
+    container_name: streamlit_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./ui:/app
+    env_file: .env
+
   db:
     image: mongodb/mongodb-community-server:latest
     container_name: mongo_db
@@ -22,5 +45,19 @@ services:
     ports:
       - 29019:27017
 
+  graphdb:
+    container_name: neo4j
+    image: neo4j:latest
+    environment:  
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_security_auth__enabled=false
+    restart: unless-stopped
+    volumes:
+      - neo4j_data:/data
+    ports:
+      - 7674:7474
+      - 7887:7687
+
 volumes:
-  mongo-data:
+  mongo_data:
+  neo4j_data:
