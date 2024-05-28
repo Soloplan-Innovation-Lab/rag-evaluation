@@ -1,11 +1,5 @@
 from typing import List
-
-try:
-    from pydantic import BaseModel
-except ImportError:
-    raise ImportError(
-        "Necessary evaluation dependencies are not installed. Please run `pip install pydantic`."
-    )
+from pydantic import BaseModel
 
 
 class EvaluationPayload(BaseModel):
@@ -42,6 +36,27 @@ class EvaluationRequest(BaseModel):
     iterations_per_entry: int
     description: str
     run_type: str
+
+
+class ChatEvaluationRequest(BaseModel):
+    """
+    The request type for a chat evaluation (rather than a dataset evaluation).
+
+    Args:
+        - input (str): The input to the model.
+        - actual_output (str): The actual output from the model.
+        - retrieval_context (List[str]): The retrieval context for the model.
+        - system_prompt (str): The system prompt.
+        - chat_session_id (str): The chat session ID.
+    """
+
+    description: str
+    run_type: str
+    input: str
+    actual_output: str
+    retrieval_context: List[str]
+    system_prompt: str
+    chat_session_id: str
 
 
 class EvaluationResult(BaseModel):

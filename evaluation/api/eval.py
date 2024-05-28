@@ -17,7 +17,7 @@ from deepeval.metrics import (
     ContextualRecallMetric,
     ContextualRelevancyMetric,
 )
-from deepeval.test_case import LLMTestCase
+from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 from ragas import evaluate as r_evaluate
 from ragas.metrics import (
     faithfulness,
@@ -28,15 +28,31 @@ from ragas.metrics import (
     context_entity_recall,
     answer_similarity,
 )
-from internal_shared.ai_models.evaluation_models import azure_openai, azure_model, azure_embeddings
-from internal_shared.models.evaluation.database_models import DeepEvalMetric, _Evaluations, _Iterations, Runs
+from internal_shared.ai_models.evaluation_models import (
+    azure_openai,
+    azure_model,
+    azure_embeddings,
+)
+from internal_shared.models.evaluation.database_models import (
+    DeepEvalMetric,
+    _Evaluations,
+    _Iterations,
+    Iterations,
+    Runs,
+)
 from internal_shared.models.evaluation.models import (
+    ChatEvaluationRequest,
     EvaluationRequest,
     EvaluationPayload,
     EvaluationResponse,
     EvaluationResult,
 )
-from db import db, sync_db
+from internal_shared.db.mongo import get_async_db, get_sync_db
+from internal_shared.logger import get_logger
+
+_EVALUATION_DB = "evaluation_db"
+
+logger = get_logger(__name__)
 
 
 async def batch_evaluate(req: EvaluationRequest):
@@ -45,6 +61,10 @@ async def batch_evaluate(req: EvaluationRequest):
     """
     items = req.dataset
     iterations = req.iterations_per_entry
+
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        raise ValueError("Database not available")
 
     # start run
     start_time = dt.now(datetime.UTC)
@@ -59,7 +79,7 @@ async def batch_evaluate(req: EvaluationRequest):
     insert_result = await db.runs.insert_one(run_dict)
     run_id = insert_result.inserted_id
 
-    print(f"Created run with ID {run_id}")
+    logger.info(f"Created run with ID {run_id}")
 
     # evaluate in a separate thread to get another event loop
     with ThreadPoolExecutor() as executor:
@@ -70,7 +90,7 @@ async def batch_evaluate(req: EvaluationRequest):
     end_time = dt.now(datetime.UTC)
     await db.runs.update_one({"_id": run_id}, {"$set": {"end_time": end_time}})
 
-    print(f"Finished run with ID {run_id}")
+    logger.info(f"Finished run with ID {run_id}")
 
     return EvaluationResponse(
         run_id=str(run_id),
@@ -78,13 +98,98 @@ async def batch_evaluate(req: EvaluationRequest):
     )
 
 
+async def evaluate_chat(req: ChatEvaluationRequest):
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        raise ValueError("Database not available")
+
+    start_time = dt.now(datetime.UTC)
+    run = Runs(
+        run_type=req.run_type,
+        description=req.description,
+        start_time=start_time,
+        total_data_points=1,
+        chat_session_id=req.chat_session_id,
+    )
+    run_dict = run.model_dump(by_alias=True, exclude=["id"])
+    insert_result = await db.runs.insert_one(run_dict)
+    run_id = insert_result.inserted_id
+
+    logger.info(f"Created run with ID {run_id}")
+
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(_internal_chat_evaluate, req, run_id)
+        chat_result = future.result()
+
+    end_time = dt.now(datetime.UTC)
+    await db.runs.update_one({"_id": run_id}, {"$set": {"end_time": end_time}})
+
+    logger.info(f"Finished run with ID {run_id}")
+
+    return chat_result
+
+
+def _internal_chat_evaluate(req: ChatEvaluationRequest, run_id: str):
+    db = get_sync_db(_EVALUATION_DB)
+    if db is None:
+        raise ValueError("Database not available")
+
+    test_case = LLMTestCase(
+        input=req.input,
+        actual_output=req.actual_output,
+        retrieval_context=req.retrieval_context,
+    )
+
+    dataset = EvaluationDataset(test_cases=[test_case])
+    metrics = [
+        _create_deepeval_metric(AnswerRelevancyMetric, 0.7),
+        _create_deepeval_metric(FaithfulnessMetric, 0.7, include_reason=True),
+        _create_deepeval_metric(ContextualRelevancyMetric, 0.7, include_reason=True),
+    ]
+
+    evaluation = _Evaluations(
+        run_id=ObjectId(run_id),
+        total_iterations=1,
+        input=req.input,
+        actual_output=req.actual_output,
+        retrieval_context=req.retrieval_context,
+    )
+    evaluation_dict = evaluation.model_dump(by_alias=True, exclude=["id"])
+    evaluation_insert_result = db.evaluations.insert_one(evaluation_dict)
+
+    logger.info(f"Created evaluation with ID {evaluation_insert_result.inserted_id}")
+
+    results = d_evaluate(dataset, metrics)
+
+    iteration_data = _Iterations(
+        evaluation_id=ObjectId(evaluation_insert_result.inserted_id),
+        iteration=0,
+        deepeval=_map_deepeval_results(results),
+    )
+    iteration_dict = iteration_data.model_dump(by_alias=True, exclude=["id"])
+    iteration_insert_result = db.iterations.insert_one(iteration_dict)
+
+    logger.info(f"Created iteration with ID {iteration_insert_result.inserted_id}")
+
+    return Iterations(
+        id=str(iteration_insert_result.inserted_id),
+        evaluation_id=str(evaluation_insert_result.inserted_id),
+        iteration=0,
+        deepeval=iteration_data.deepeval,
+    )
+
+
 def _internal_batch_evaluate(
     items: List[EvaluationPayload], iterations: int, run_id: str
 ):
+    db = get_sync_db(_EVALUATION_DB)
+    if db is None:
+        raise ValueError("Database not available")
+
     evaluation_ids: List[EvaluationResult] = []
     # iterate over the dataset
     for index, data_point in enumerate(items):
-        print(f"Processing data point {index + 1}/{len(items)}")
+        logger.info(f"Processing data point {index + 1}/{len(items)}")
 
         # store evaluation data
         # since this is the parent of the iteration, we need to store the data point first
@@ -98,14 +203,16 @@ def _internal_batch_evaluate(
             retrieval_context=data_point.retrieval_context,
         )
         evaluation_dict = evaluation.model_dump(by_alias=True, exclude=["id"])
-        evaluation_insert_result = sync_db.evaluations.insert_one(evaluation_dict)
+        evaluation_insert_result = db.evaluations.insert_one(evaluation_dict)
 
-        print(f"Created evaluation with ID {evaluation_insert_result.inserted_id}")
+        logger.info(
+            f"Created evaluation with ID {evaluation_insert_result.inserted_id}"
+        )
 
         iteration_ids = []
         # evaluate the data points for the given number of iterations
         for iteration in range(iterations):
-            print(f"Processing iteration {iteration + 1}/{iterations}")
+            logger.info(f"Processing iteration {iteration + 1}/{iterations}")
 
             deepeval_results = batch_evaluate_deepeval([data_point])
             ragas_results = batch_evaluate_ragas([data_point])
@@ -119,9 +226,11 @@ def _internal_batch_evaluate(
                 ragas=_map_ragas_results(ragas_results),
             )
             iteration_dict = iteration_data.model_dump(by_alias=True, exclude=["id"])
-            iteration_insert_result = sync_db.iterations.insert_one(iteration_dict)
+            iteration_insert_result = db.iterations.insert_one(iteration_dict)
 
-            print(f"Created iteration with ID {iteration_insert_result.inserted_id}")
+            logger.info(
+                f"Created iteration with ID {iteration_insert_result.inserted_id}"
+            )
             iteration_ids.append(str(iteration_insert_result.inserted_id))
 
         # update the evaluation with the iteration ids

@@ -1,5 +1,6 @@
 import json
 import os
+from typing import List
 import requests
 import pandas as pd
 import plotly.express as px
@@ -15,10 +16,16 @@ from internal_shared.models.chat import (
     RetrievalType,
     PostRetrievalType,
 )
+from internal_shared.models.evaluation.models import ChatEvaluationRequest
 
-_API_BASE_URI = os.getenv("RAG_PIPELINE_URL")
-if _API_BASE_URI is None:
+_RAG_API_BASE = os.getenv("RAG_PIPELINE_URL")
+if _RAG_API_BASE is None:
     raise ValueError("RAG_PIPELINE_URL environment variable not set")
+
+_EVAL_API_BASE = os.getenv("EVALUATION_URL")
+if _EVAL_API_BASE is None:
+    raise ValueError("EVALUATION_URL environment variable not set")
+
 _MAIN_CONTAINER_HEIGHT = 725
 
 st.title("RAG Chat Playground")
@@ -35,15 +42,20 @@ if "current_prompt" not in st.session_state:
     st.session_state.current_prompt = ""
 if "historical_responses" not in st.session_state:
     st.session_state["historical_responses"] = []
+if "evaluation_data" not in st.session_state:
+    st.session_state.evaluation_data = {}
 
 
 def create_response(chat_request: ChatRequest):
-    if "chat_session_id" in st.session_state and st.session_state["chat_session_id"] is not None:
+    if (
+        "chat_session_id" in st.session_state
+        and st.session_state["chat_session_id"] is not None
+    ):
         request_uri = (
-            f"{_API_BASE_URI}/chat?chat_id={st.session_state['chat_session_id']}"
+            f"{_RAG_API_BASE}/chat?chat_id={st.session_state['chat_session_id']}"
         )
     else:
-        request_uri = f"{_API_BASE_URI}/chat"
+        request_uri = f"{_RAG_API_BASE}/chat"
     response = requests.post(
         request_uri,
         json=chat_request.model_dump(by_alias=True),
@@ -60,12 +72,15 @@ def create_response(chat_request: ChatRequest):
 
 
 def create_stream_response(chat_request: ChatRequest):
-    if "chat_session_id" in st.session_state and st.session_state["chat_session_id"] is not None:
+    if (
+        "chat_session_id" in st.session_state
+        and st.session_state["chat_session_id"] is not None
+    ):
         request_uri = (
-            f"{_API_BASE_URI}/chat/stream?chat_id={st.session_state['chat_session_id']}"
+            f"{_RAG_API_BASE}/chat/stream?chat_id={st.session_state['chat_session_id']}"
         )
     else:
-        request_uri = f"{_API_BASE_URI}/chat/stream"
+        request_uri = f"{_RAG_API_BASE}/chat/stream"
     response = requests.post(
         request_uri,
         json=chat_request.model_dump(by_alias=True),
@@ -100,7 +115,7 @@ def create_stream_response(chat_request: ChatRequest):
 
 def get_prompt_templates():
     response = requests.get(
-        f"{_API_BASE_URI}/prompt_template", params={"skip": 0, "limit": 100}
+        f"{_RAG_API_BASE}/prompt_template", params={"skip": 0, "limit": 100}
     )
     if response.status_code == 200:
         return response.json()
@@ -111,7 +126,7 @@ def get_prompt_templates():
 def create_prompt_template(name: str, template: str):
     payload = PromptTemplate(name=name, template=template)
     response = requests.post(
-        f"{_API_BASE_URI}/prompt_template",
+        f"{_RAG_API_BASE}/prompt_template",
         json=payload.model_dump(by_alias=True),
     )
     if response.status_code == 200:
@@ -121,7 +136,7 @@ def create_prompt_template(name: str, template: str):
 
 
 def delete_prompt_template(template: str):
-    response = requests.delete(f"{_API_BASE_URI}/prompt_template/{template}")
+    response = requests.delete(f"{_RAG_API_BASE}/prompt_template/{template}")
     if response.status_code == 200:
         return response.json()
     else:
@@ -130,8 +145,18 @@ def delete_prompt_template(template: str):
 
 def update_prompt_template(template: str, payload: PromptTemplate):
     response = requests.put(
-        f"{_API_BASE_URI}/prompt_template/{template}",
+        f"{_RAG_API_BASE}/prompt_template/{template}",
         json=payload.model_dump(by_alias=True),
+    )
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.error(f"{response.status_code}: {response.reason}")
+
+
+def evaluate_request(payload: ChatEvaluationRequest):
+    response = requests.post(
+        f"{_EVAL_API_BASE}/evaluate/chat", json=payload.model_dump(by_alias=True)
     )
     if response.status_code == 200:
         return response.json()
@@ -215,6 +240,7 @@ with col3:
         )
 
         streaming = st.checkbox("Stream Response", key="streaming")
+        evaluation = st.checkbox("Evaluate Response", key="evaluation")
 
         retrieval_types = [e.value for e in RetrievalType]
         pre_retrieval_types = [e.value for e in PreRetrievalType]
@@ -347,6 +373,21 @@ with col2:
                     )
                     st.session_state.response_data = response_data
 
+            if evaluation:
+                evaluation_request = ChatEvaluationRequest(
+                    description="playground_eval",
+                    run_type=f"rag_playground__{selected_template}",
+                    input=prompt,
+                    actual_output=assistant_response,
+                    retrieval_context=st.session_state.response_data.get(
+                        "documents", []
+                    ),
+                    system_prompt=template_content,
+                    chat_session_id=st.session_state.chat_session_id,
+                )
+                ev_res = evaluate_request(evaluation_request)
+                st.session_state.evaluation_data = ev_res
+
 # Output Area with Tabs for Detailed View
 st.subheader("Response Details")
 tabs = st.tabs(["Response", "Documents", "Metadata", "Charts"])
@@ -415,6 +456,44 @@ if "response_data" in st.session_state:
                     names="Step",
                 )
                 st.plotly_chart(pie_chart)
+
+        evaluation_data = st.session_state.get("evaluation_data", {})
+        if evaluation_data:
+            rows = []
+
+            # Assuming evaluation_data itself is a single dictionary with necessary keys
+            # Check and process deepeval metrics
+            deepeval_metrics = evaluation_data.get("deepeval", {})
+            for metric_name, metric in deepeval_metrics.items():
+                rows.append(
+                    {
+                        "Metric": metric_name,
+                        "Reason": metric.get("reason", ""),
+                        "Score": metric.get("score", 0),
+                        "Threshold": metric.get("threshold", None),
+                        "Success": metric.get("success", None),
+                    }
+                )
+
+            # Check and process ragas metrics
+            ragas_metrics = evaluation_data.get("ragas", {})
+            for metric_name, score in ragas_metrics.items():
+                rows.append(
+                    {
+                        "Metric": metric_name,
+                        "Reason": "RAGAS",
+                        "Score": score,
+                        "Threshold": None,
+                        "Success": None,
+                    }
+                )
+
+            # Create a DataFrame from the list of rows
+            ev_df = pd.DataFrame(rows)
+
+            st.subheader("Evaluation Metrics")
+            # Display the DataFrame in Streamlit
+            st.dataframe(ev_df, use_container_width=True)
 
         # Line Graphs for Performance and Token Usage Over Time
         historical_responses = st.session_state.historical_responses

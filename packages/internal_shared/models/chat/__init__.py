@@ -55,9 +55,12 @@ class RetrievalConfig(BaseModel):
     threshhold: float = 0.5
 
 class ResponseBehavior(BaseModel):
+    # experimental feature
+
     # short, medium, long
     # formats like JSON, YAML, XML
     # formal, academic, casual, comercial
+    
     pass
 
 

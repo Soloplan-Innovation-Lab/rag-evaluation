@@ -4,9 +4,8 @@ from typing import List, Union
 from bson import ObjectId
 from bson.errors import InvalidId
 from uvicorn import Config, Server
-from evaluation import batch_evaluate
+from eval import batch_evaluate, evaluate_chat
 from fastapi import Query, FastAPI, Response, status
-from db import db
 from internal_shared.models.evaluation.database_models import (
     PopulatedRuns,
     Runs,
@@ -14,11 +13,15 @@ from internal_shared.models.evaluation.database_models import (
     Iterations,
 )
 from internal_shared.models.evaluation.models import (
+    ChatEvaluationRequest,
     EvaluationRequest,
     EvaluationResponse,
 )
+from internal_shared.db.mongo import get_async_db
 
 app = FastAPI()
+
+_EVALUATION_DB = "evaluation_db"
 
 
 @app.get("/")
@@ -36,6 +39,17 @@ def ping():
 )
 async def evaluate_dataset(req: EvaluationRequest):
     return await batch_evaluate(req)
+
+
+@app.post(
+    "/evaluate/chat",
+    summary="Evaluate a chat session",
+    description="Evaluates a chat session and saves the results in the database",
+    response_model=Iterations,
+    response_model_by_alias=False,
+)
+async def evaluate_chat_session(req: ChatEvaluationRequest):
+    return await evaluate_chat(req)
 
 
 @app.get(
@@ -77,6 +91,13 @@ async def get_run(
     if date_query:
         query["start_time"] = date_query
 
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        return Response(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Database not found",
+        )
+
     run = await db.runs.find_one(query)
 
     if run is None:
@@ -110,6 +131,13 @@ async def get_run(
     response_model_by_alias=False,
 )
 async def get_evaluations(run_id: str, skip: int = 0, limit: int = 100):
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        return Response(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Database not found",
+        )
+
     evaluations = (
         await db.evaluations.find({"run_id": ObjectId(run_id)})
         .skip(skip)
@@ -126,6 +154,13 @@ async def get_evaluations(run_id: str, skip: int = 0, limit: int = 100):
     response_model_by_alias=False,
 )
 async def get_specific_evaluation(evaluation_id: str):
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        return Response(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Database not found",
+        )
+
     evaluations = await db.evaluations.find_one({"_id": ObjectId(evaluation_id)})
     return evaluations
 
@@ -137,6 +172,13 @@ async def get_specific_evaluation(evaluation_id: str):
     response_model_by_alias=False,
 )
 async def get_iterations(evaluation_id: str, skip: int = 0, limit: int = 100):
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        return Response(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Database not found",
+        )
+
     iterations = (
         await db.iterations.find({"evaluation_id": ObjectId(evaluation_id)})
         .skip(skip)
@@ -153,6 +195,13 @@ async def get_iterations(evaluation_id: str, skip: int = 0, limit: int = 100):
     response_model_by_alias=False,
 )
 async def get_specific_iteration(iteration_id: str):
+    db = await get_async_db(_EVALUATION_DB)
+    if db is None:
+        return Response(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Database not found",
+        )
+
     iterations = await db.iterations.find_one({"_id": ObjectId(iteration_id)})
     return iterations
 

@@ -1,23 +1,9 @@
 from typing_extensions import Annotated
 from typing import Dict, List, Optional
 from datetime import datetime
-
-# try to import pydantic
-try:
-    from pydantic import ConfigDict, BaseModel, Field
-    from pydantic.functional_validators import BeforeValidator
-except ImportError:
-    raise ImportError(
-        "Necessary evaluation dependencies are not installed. Please run `pip install pydantic`."
-    )
-
-# try to import bson
-try:
-    from bson import ObjectId
-except ImportError:
-    raise ImportError(
-        "Necessary evaluation dependencies are not installed. Please run `pip install pymongo`."
-    )
+from pydantic import ConfigDict, BaseModel, Field
+from pydantic.functional_validators import BeforeValidator
+from bson import ObjectId
 
 # ref: https://github.com/mongodb-developer/mongodb-with-fastapi/blob/master/app.py
 
@@ -64,6 +50,7 @@ class Runs(BaseModel):
         - start_time (datetime): The start time of the run.
         - end_time (datetime | None): The end time of the run. Defaults to None.
         - total_data_points (int): The total data points of the run.
+        - chat_session_id (str | None): The chat session ID. Defaults to None. Is used to link the run to a chat session for real-time evaluation.
     """
 
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
@@ -74,6 +61,7 @@ class Runs(BaseModel):
     start_time: datetime
     end_time: Optional[datetime] = None
     total_data_points: int
+    chat_session_id: Optional[str] = None
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -127,8 +115,8 @@ class Iterations(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     evaluation_id: PyObjectId
     iteration: int
-    deepeval: Dict[str, DeepEvalMetric]
-    ragas: Dict[str, float]
+    deepeval: Optional[Dict[str, DeepEvalMetric]] = {}
+    ragas: Optional[Dict[str, float]] = {}
 
     model_config = ConfigDict(
         populate_by_name=True,

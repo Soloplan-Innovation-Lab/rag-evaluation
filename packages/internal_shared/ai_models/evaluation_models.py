@@ -1,12 +1,6 @@
-try:
-    from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-    from langchain_openai.chat_models.base import BaseChatOpenAI
-    from deepeval.models.base_model import DeepEvalBaseLLM
-except ImportError:
-    raise ImportError(
-        "Necessary evaluation dependencies are not installed. Please run `pip install langchain-openai deepeval`."
-    )
-
+from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
+from langchain_openai.chat_models.base import BaseChatOpenAI
+from deepeval.models.base_model import DeepEvalBaseLLM
 from internal_shared.ai_models.available_models import GPT_4O, GPT_35_TURBO, EMBEDDING_3_LARGE
 
 # ref: https://docs.ragas.io/en/stable/howtos/customisations/azure-openai.html
@@ -60,4 +54,4 @@ azure_embeddings = AzureOpenAIEmbeddings(
     api_key=EMBEDDING_3_LARGE.api_key,
 )
 
-azure_openai = AzureOpenAI(model=azure_model, name="Azure OpenAI GPT-35 Turbo")
+azure_openai = AzureOpenAI(model=azure_model, name=GPT_35_TURBO.model_name)
