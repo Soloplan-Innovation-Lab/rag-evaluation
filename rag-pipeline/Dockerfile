@@ -3,14 +3,15 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:latest
 
 # Install dependencies directly
 RUN pip install --no-cache-dir --upgrade \
-    ragas \
-    deepeval \
     langchain \
     langchain-openai \
     fastapi-slim[standard] \
     pymongo \
     motor \
-    pydantic
+    pydantic \
+    azure-search-documents \
+    tiktoken \
+    neomodel
 
 # Copy your source files to the /app directory in the container
 COPY ./evaluation/api /app

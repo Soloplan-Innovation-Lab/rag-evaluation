@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from typing_extensions import Annotated
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
-from internal_shared.ai_models.available_models import AvailableModels
+from internal_shared.ai_models import AvailableModels
 
 DEFAULT_MODEL = AvailableModels.GPT_4O
 
@@ -53,6 +53,12 @@ class RetrievalConfig(BaseModel):
     post_retrieval_type: PostRetrievalType
     top_k: int = 5
     threshhold: float = 0.5
+
+class ResponseBehavior(BaseModel):
+    # short, medium, long
+    # formats like JSON, YAML, XML
+    # formal, academic, casual, comercial
+    pass
 
 
 class RetrievalStepResult(BaseModel):

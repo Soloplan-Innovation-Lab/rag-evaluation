@@ -4,8 +4,8 @@ from langchain_core.language_models import LanguageModelInput
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_openai.chat_models.base import BaseChatOpenAI
 from langchain_core.messages import BaseMessage
+from internal_shared.ai_models import AvailableModels
 from internal_shared.ai_models.available_models import (
-    AvailableModels,
     available_models_to_model_metadata,
     EMBEDDING_3_LARGE,
 )

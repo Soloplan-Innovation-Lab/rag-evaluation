@@ -1,4 +1,4 @@
-from internal_shared.ai_models.available_models import AvailableModels
+from internal_shared.ai_models import AvailableModels
 import streamlit as st
 import tiktoken
 

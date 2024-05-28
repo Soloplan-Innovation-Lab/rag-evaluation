@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: ./evaluation/Dockerfile
     ports:
-      - "8000:80"
+      - 8000:80
     depends_on:
       - db
     env_file: .env
@@ -18,35 +18,33 @@ services:
     container_name: rag_pipeline
     build:
       context: .
-      dockerfile: ./rag_pipeline/Dockerfile
+      dockerfile: ./rag-pipeline/Dockerfile
     ports:
-      - "8001:80"
+      - 8001:80
     depends_on:
       - db
       - graphdb
     env_file: .env
 
   ui:
-  # run streamlit app
-    image: streamlit/streamlit:latest
+    image: python:3.11-slim
     container_name: streamlit_app
+    build:
+      context: .
+      dockerfile: ./ui/Dockerfile
     ports:
-      - "8501:8501"
-    volumes:
-      - ./ui:/app
-    env_file: .env
+      - 8503:8501
+    env_file: ./ui/.env
 
   db:
     image: mongodb/mongodb-community-server:latest
-    container_name: mongo_db
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
       - 29019:27017
 
   graphdb:
-    container_name: neo4j
     image: neo4j:latest
     environment:  
       - NEO4J_AUTH=none

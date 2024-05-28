@@ -1,10 +1,11 @@
 import json
+import os
 import requests
 import pandas as pd
 import plotly.express as px
 from pydantic import ValidationError
 import streamlit as st
-from internal_shared.ai_models.available_models import AvailableModels
+from internal_shared.ai_models import AvailableModels
 from internal_shared.models.chat import (
     ChatRequest,
     ChatResponseChunk,
@@ -15,7 +16,9 @@ from internal_shared.models.chat import (
     PostRetrievalType,
 )
 
-_API_BASE_URI = "http://127.0.0.1:8000"
+_API_BASE_URI = os.getenv("RAG_PIPELINE_URL")
+if _API_BASE_URI is None:
+    raise ValueError("RAG_PIPELINE_URL environment variable not set")
 _MAIN_CONTAINER_HEIGHT = 725
 
 st.title("RAG Chat Playground")
@@ -35,7 +38,7 @@ if "historical_responses" not in st.session_state:
 
 
 def create_response(chat_request: ChatRequest):
-    if "chat_session_id" in st.session_state:
+    if "chat_session_id" in st.session_state and st.session_state["chat_session_id"] is not None:
         request_uri = (
             f"{_API_BASE_URI}/chat?chat_id={st.session_state['chat_session_id']}"
         )
@@ -57,7 +60,7 @@ def create_response(chat_request: ChatRequest):
 
 
 def create_stream_response(chat_request: ChatRequest):
-    if "chat_session_id" in st.session_state:
+    if "chat_session_id" in st.session_state and st.session_state["chat_session_id"] is not None:
         request_uri = (
             f"{_API_BASE_URI}/chat/stream?chat_id={st.session_state['chat_session_id']}"
         )

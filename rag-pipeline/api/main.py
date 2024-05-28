@@ -1,10 +1,7 @@
-import asyncio
 from datetime import datetime, UTC
-import json
-from time import sleep
-import time
+import os
 from bson import ObjectId
-from typing import AsyncGenerator, List, Optional
+from typing import List, Optional
 from fastapi import Query, FastAPI, Response, status
 from fastapi.responses import StreamingResponse
 from uvicorn import Config, Server
@@ -13,17 +10,10 @@ from internal_shared.logger import get_logger
 from internal_shared.models.chat import (
     ChatRequest,
     ChatResponse,
-    ChatResponseChunk,
     PromptTemplate,
 )
-from pipeline import (
-    execute_pipeline,
-    execute_pipeline_streaming,
-    prepare_prompt,
-    retrieve_documents,
-)
+from pipeline import execute_pipeline, execute_pipeline_streaming
 from uuid import uuid4
-from llm import invoke_streaming_prompt_async
 
 _RAG_PIPELINE_DB = "rag_pipeline"
 
@@ -193,7 +183,11 @@ async def delete_template(template: str):
 
 
 def main():
-    config = Config(app=app)
+    dev_port = os.getenv("RAG_DEV_PORT")
+    if dev_port:
+        config = Config(app=app, port=int(dev_port))
+    else:
+        config = Config(app=app)
     server = Server(config=config)
     server.run()
 

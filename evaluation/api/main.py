@@ -1,4 +1,5 @@
 from datetime import datetime, UTC
+import os
 from typing import List, Union
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -157,7 +158,11 @@ async def get_specific_iteration(iteration_id: str):
 
 
 def main():
-    config = Config(app=app)
+    dev_port = os.getenv("EVAL_DEV_PORT")
+    if dev_port:
+        config = Config(app=app, port=int(dev_port))
+    else:
+        config = Config(app=app)
     server = Server(config=config)
     server.run()
 
