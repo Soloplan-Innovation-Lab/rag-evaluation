@@ -48,16 +48,16 @@ class RetrievalStrategy(ABC):
 
 
 class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
-    def __init__(self) -> None:
+    def __init__(self, index_name: str = None) -> None:
         self.search_client = SearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=os.getenv("AZURE_AI_SEARCH_INDEX"),
+            index_name=index_name or os.getenv("AZURE_AI_SEARCH_INDEX"),
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
         self.async_search_client = AsyncSearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=os.getenv("AZURE_AI_SEARCH_INDEX"),
+            index_name=index_name or os.getenv("AZURE_AI_SEARCH_INDEX"),
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
@@ -179,14 +179,14 @@ class RetrievalStrategyFactory:
     """
 
     @staticmethod
-    def create(retrieval_type: RetrievalType) -> RetrievalStrategy:
-        match retrieval_type:
+    def create(cfg: RetrievalConfig) -> RetrievalStrategy:
+        match cfg.retrieval_type:
             case RetrievalType.VECTOR:
-                return VectorDatabaseRetrievalStrategy()
+                return VectorDatabaseRetrievalStrategy(index_name=cfg.index_name)
             case RetrievalType.GRAPH:
                 return GraphDatabaseRetrievalStrategy()
             case _:
-                raise ValueError(f"Unknown retrieval type: {retrieval_type}")
+                raise ValueError(f"Unknown retrieval type: {cfg.retrieval_type}")
 
 
 class RetrievalStep:
@@ -199,7 +199,7 @@ class RetrievalStep:
         """
         Execute a retrieval strategy based on the given configuration.
         """
-        retrieval = RetrievalStrategyFactory.create(cfg.retrieval_type)
+        retrieval = RetrievalStrategyFactory.create(cfg)
         return retrieval.execute(query, cfg.threshold, cfg.top_k)
 
     @staticmethod

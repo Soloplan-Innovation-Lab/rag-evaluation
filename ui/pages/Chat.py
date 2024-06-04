@@ -253,6 +253,7 @@ with col3:
             st.session_state["retrieval_behaviours"].append(
                 {
                     "context_key": "context",
+                    "index_name": None,
                     "retrieval_type": retrieval_types[0],
                     "pre_retrieval_type": pre_retrieval_types[0],
                     "post_retrieval_type": post_retrieval_types[0],
@@ -272,6 +273,10 @@ with col3:
                 retrieval["context_key"] = st.text_input(
                     f"Context Key for Step {i + 1}",
                     value=retrieval["context_key"],
+                )
+                retrieval["index_name"] = st.text_input(
+                    f"Index Name for Step {i + 1}. Leave blank for default",
+                    value=retrieval["index_name"],
                 )
                 retrieval["retrieval_type"] = st.selectbox(
                     f"Retrieval Type for Step {i + 1}",
