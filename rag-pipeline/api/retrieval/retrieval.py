@@ -8,12 +8,16 @@ from azure.search.documents import SearchClient
 from azure.search.documents.aio import SearchClient as AsyncSearchClient
 from azure.search.documents.models import VectorizedQuery
 from neomodel import db, config
-from internal_shared.models.chat import SearchResult, RetrievalType
+from internal_shared.models.chat import RetrievalConfig, SearchResult, RetrievalType
 
 config.DATABASE_URL = os.getenv("NEO4J_URI")
 
 
 class RetrievalStrategy(ABC):
+    """
+    Abstract class for retrieval strategies.
+    """
+
     @abstractmethod
     def execute(
         self, query: List[float], threshold: float = 0.5, top_k: int = 5
@@ -170,6 +174,10 @@ class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
 
 
 class RetrievalStrategyFactory:
+    """
+    Factory class to create retrieval strategies.
+    """
+
     @staticmethod
     def create(retrieval_type: RetrievalType) -> RetrievalStrategy:
         match retrieval_type:
@@ -179,3 +187,27 @@ class RetrievalStrategyFactory:
                 return GraphDatabaseRetrievalStrategy()
             case _:
                 raise ValueError(f"Unknown retrieval type: {retrieval_type}")
+
+
+class RetrievalStep:
+    """
+    Facade class to execute retrieval strategies.
+    """
+
+    @staticmethod
+    def execute(cfg: RetrievalConfig, query: List[float]) -> List[SearchResult]:
+        """
+        Execute a retrieval strategy based on the given configuration.
+        """
+        retrieval = RetrievalStrategyFactory.create(cfg.retrieval_type)
+        return retrieval.execute(query, cfg.threshold, cfg.top_k)
+
+    @staticmethod
+    async def execute_async(
+        cfg: RetrievalConfig, query: List[float]
+    ) -> List[SearchResult]:
+        """
+        Execute a retrieval strategy based on the given configuration asynchronously.
+        """
+        retrieval = RetrievalStrategyFactory.create(cfg.retrieval_type)
+        return await retrieval.execute_async(query, cfg.threshold, cfg.top_k)

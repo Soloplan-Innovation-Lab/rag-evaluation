@@ -252,6 +252,7 @@ with col3:
         def add_retrieval_step():
             st.session_state["retrieval_behaviours"].append(
                 {
+                    "context_key": "context",
                     "retrieval_type": retrieval_types[0],
                     "pre_retrieval_type": pre_retrieval_types[0],
                     "post_retrieval_type": post_retrieval_types[0],
@@ -268,6 +269,10 @@ with col3:
 
         for i, retrieval in enumerate(st.session_state["retrieval_behaviours"]):
             with st.expander(f"Step {i + 1}"):
+                retrieval["context_key"] = st.text_input(
+                    f"Context Key for Step {i + 1}",
+                    value=retrieval["context_key"],
+                )
                 retrieval["retrieval_type"] = st.selectbox(
                     f"Retrieval Type for Step {i + 1}",
                     options=retrieval_types,

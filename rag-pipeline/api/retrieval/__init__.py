@@ -1,3 +1,3 @@
-from .pre_retrieval import PreRetrievalStrategyFactory
-from .retrieval import RetrievalStrategyFactory
-from .post_retrieval import PostRetrievalStrategyFactory
+from .pre_retrieval import PreRetrievalStep
+from .retrieval import RetrievalStep
+from .post_retrieval import PostRetrievalStep

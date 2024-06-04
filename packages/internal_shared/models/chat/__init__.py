@@ -17,6 +17,10 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 class PreRetrievalType(str, Enum):
     DEFAULT = "default"
     QUERY_EXPANSION = "query_expansion"
+    REWRITE_RETRIEVE_READ = "rewrite_retrieve_read"
+    STEP_BACK_PROMPTING = "step_back_prompting"
+    HYDE = "hyde"
+    REPHRASE_AND_RESPOND = "rephrase_and_respond"
 
 
 class RetrievalType(str, Enum):
@@ -47,12 +51,14 @@ class TokenUsage(BaseModel):
 class RetrievalConfig(BaseModel):
     """Configuration for a retrieval step."""
 
-    # later, add index_name here
+    context_key: str = "context"
+    index_name: str | None = None
     retrieval_type: RetrievalType
     pre_retrieval_type: PreRetrievalType
     post_retrieval_type: PostRetrievalType
     top_k: int = 5
-    threshhold: float = 0.5
+    threshold: float = 0.5
+
 
 class ResponseBehavior(BaseModel):
     # experimental feature
@@ -60,7 +66,7 @@ class ResponseBehavior(BaseModel):
     # short, medium, long
     # formats like JSON, YAML, XML
     # formal, academic, casual, comercial
-    
+
     pass
 
 
@@ -176,6 +182,7 @@ class ChatResponseDTO(BaseModel):
         arbitrary_types_allowed=True,
         json_encoders={ObjectId: str},
     )
+
 
 class ChatResponseChunk(BaseModel):
     chunk: str

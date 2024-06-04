@@ -11,14 +11,14 @@ from internal_shared.models.chat import (
     PostRetrievalType,
 )
 from internal_shared.utils.timer import atime_wrapper
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import BaseMessageChunk
 from llm import embed_text_async, invoke_prompt_async, invoke_streaming_prompt_async
 from retrieval import (
-    PostRetrievalStrategyFactory,
-    PreRetrievalStrategyFactory,
-    RetrievalStrategyFactory,
+    PreRetrievalStep,
+    RetrievalStep,
+    PostRetrievalStep,
 )
 from .helper import calculate_token_str_usage, calculate_token_usage, format_chat_history
 
@@ -67,13 +67,15 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
     response = "".join([c.content for c in chunks])
 
     # now, it is not important how long anything takes
-    token_usage = calculate_token_str_usage([p.content for p in prompt], response, request.model)
+    token_usage = calculate_token_str_usage(
+        [p.content for p in prompt], response, request.model
+    )
 
     # Send final response metadata as an empty chunk with complete metadata
     final_response_metadata = ChatResponse(
         chat_session_id=chat_id,
         response=response,
-        documents=context,
+        documents=[item for sublist in context.values() for item in sublist],
         request=request.query,
         model=request.model,
         response_duration=elapsed_time,
@@ -96,7 +98,7 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
 
 async def retrieve_documents(
     request: ChatRequest,
-) -> Tuple[List[str], List[RetrievalStepResult]]:
+) -> Tuple[Dict[str, List[str]], List[RetrievalStepResult]]:
     """
     Executes the whole retrieval pipeline in order to retrieve documents based on the retrieval behaviour in the request.
 
@@ -109,21 +111,20 @@ async def retrieve_documents(
         Executes on retrieval step to retrieve documents based on the given retrieval configuration.
         """
         # pre-retrieval
-        pre = PreRetrievalStrategyFactory.create(cfg.pre_retrieval_type)
-        pre_time, query = await atime_wrapper(pre.execute_async, request.query)
+        pre_time, query = await atime_wrapper(
+            PreRetrievalStep.execute_async, cfg.pre_retrieval_type, request.query
+        )
 
         embedded_query = await embed_text_async(query)
 
         # retrieval
-        retrieval = RetrievalStrategyFactory.create(cfg.retrieval_type)
         ret_time, retrieved_documents = await atime_wrapper(
-            retrieval.execute_async, embedded_query, cfg.threshhold, cfg.top_k
+            RetrievalStep.execute_async, cfg, embedded_query
         )
 
         # post-retrieval
-        post = PostRetrievalStrategyFactory.create(cfg.post_retrieval_type)
         post_time, post_retrieval_documents = await atime_wrapper(
-            post.execute_async, retrieved_documents
+            PostRetrievalStep.execute_async, cfg, retrieved_documents
         )
 
         step = RetrievalStepResult(
@@ -143,26 +144,29 @@ async def retrieve_documents(
 
         context = [doc.content for doc in post_retrieval_documents]
 
-        return context, step
+        return cfg.context_key, context, step
 
     results = await asyncio.gather(
         *(retrieve(cfg) for cfg in request.retrieval_behaviour)
     )
 
-    context: List[str] = []
-    for c, _ in results:
-        context.extend(c)
-    steps = [step for _, step in results]
+    context: Dict[str, List[str]] = {}
+    for key, c, _ in results:
+        if key in context:
+            context[key].extend(c)
+        else:
+            context[key] = c
+    steps = [step for _, _, step in results]
 
     return context, steps
 
 
-async def prepare_prompt(request: ChatRequest, context: List[str]):
+async def prepare_prompt(request: ChatRequest, context: Dict[str, List[str]]):
     """
     Prepares the prompt for the chat API based on the context and the request.
     """
 
-    context_string = "\n".join(context)
+    context_strings = {key: "\n".join(value) for key, value in context.items()}
 
     chat_template = ChatPromptTemplate.from_messages(
         [
@@ -184,8 +188,10 @@ async def prepare_prompt(request: ChatRequest, context: List[str]):
             ]
         )
 
-    return await chat_template.aformat_messages(
-        context=context_string,
-        request=request.query,
-        chat_history=format_chat_history(request.history),
-    )
+    combined_context = {
+        **context_strings,
+        "request": request.query,
+        "chat_history": format_chat_history(request.history),
+    }
+
+    return await chat_template.aformat_messages(**combined_context)
