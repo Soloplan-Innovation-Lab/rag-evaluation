@@ -4,8 +4,8 @@ from langchain_core.language_models import LanguageModelInput
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_openai.chat_models.base import BaseChatOpenAI
 from langchain_core.messages import BaseMessage
-from internal_shared.ai_models import AvailableModels
-from internal_shared.ai_models.available_models import (
+from internal_shared.models.ai import (
+    AvailableModels,
     available_models_to_model_metadata,
     EMBEDDING_3_LARGE,
 )
@@ -51,6 +51,7 @@ def embed_text(text: str) -> List[float]:
 
 async def embed_text_async(text: str) -> List[float]:
     return await _embedding_client.aembed_query(text)
+
 
 async def invoke_streaming_prompt_async(
     prompt: LanguageModelInput, model: AvailableModels = AvailableModels.GPT_4O

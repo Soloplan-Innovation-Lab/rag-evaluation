@@ -209,5 +209,5 @@ class RetrievalStep:
         """
         Execute a retrieval strategy based on the given configuration asynchronously.
         """
-        retrieval = RetrievalStrategyFactory.create(cfg.retrieval_type)
+        retrieval = RetrievalStrategyFactory.create(cfg)
         return await retrieval.execute_async(query, cfg.threshold, cfg.top_k)

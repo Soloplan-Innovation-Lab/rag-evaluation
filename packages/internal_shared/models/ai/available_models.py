@@ -1,7 +1,20 @@
 from dataclasses import dataclass, field
-from internal_shared.ai_models import AvailableModels
+from enum import Enum
 from internal_shared.utils.helper_functions import get_env_variable
 
+class AvailableModels(str, Enum):
+    """
+    Enum for available models.
+    """
+
+    GPT_35_TURBO = 'gpt-35-turbo'
+    GPT_4 = 'gpt-4'
+    GPT_4_32K = 'gpt-4-32k'
+    GPT_4_TURBO = 'gpt-4-turbo'
+    GPT_4O = 'gpt-4o'
+    EMBEDDING_3_LARGE = 'text-embedding-3-large'
+    EMBEDDING_3_SMALL = 'text-embedding-3-small'
+    EMBEDDING_2 = 'text-embedding-2'
 
 @dataclass(frozen=True)
 class ModelMetadata:

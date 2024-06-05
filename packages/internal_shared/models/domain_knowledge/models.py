@@ -1,17 +1,12 @@
-try:
-    from neomodel import (
-        ArrayProperty,
-        FloatProperty,
-        StructuredNode,
-        StringProperty,
-        RelationshipTo,
-        StructuredRel,
-    )
-    from pydantic import BaseModel
-except ImportError:
-    raise ImportError(
-        "Necessary evaluation dependencies are not installed. Please run `pip install neomodel pydantic`."
-    )
+from neomodel import (
+    ArrayProperty,
+    FloatProperty,
+    StructuredNode,
+    StringProperty,
+    RelationshipTo,
+    StructuredRel,
+)
+from pydantic import BaseModel
 
 
 # Define relationship models

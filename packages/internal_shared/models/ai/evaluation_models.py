@@ -1,7 +1,7 @@
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_openai.chat_models.base import BaseChatOpenAI
 from deepeval.models.base_model import DeepEvalBaseLLM
-from internal_shared.ai_models.available_models import GPT_4O, GPT_35_TURBO, EMBEDDING_3_LARGE
+from internal_shared.models.ai import GPT_4O, GPT_35_TURBO, EMBEDDING_3_LARGE
 
 # ref: https://docs.ragas.io/en/stable/howtos/customisations/azure-openai.html
 # ref: https://docs.confident-ai.com/docs/metrics-introduction#azure-openai-example

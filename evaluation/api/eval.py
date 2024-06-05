@@ -17,7 +17,7 @@ from deepeval.metrics import (
     ContextualRecallMetric,
     ContextualRelevancyMetric,
 )
-from deepeval.test_case import LLMTestCase, LLMTestCaseParams
+from deepeval.test_case import LLMTestCase
 from ragas import evaluate as r_evaluate
 from ragas.metrics import (
     faithfulness,
@@ -28,7 +28,7 @@ from ragas.metrics import (
     context_entity_recall,
     answer_similarity,
 )
-from internal_shared.ai_models.evaluation_models import (
+from internal_shared.models.ai import (
     azure_openai,
     azure_model,
     azure_embeddings,

@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from typing_extensions import Annotated
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
-from internal_shared.ai_models import AvailableModels
+from internal_shared.models.ai import AvailableModels
 
 DEFAULT_MODEL = AvailableModels.GPT_4O
 
@@ -187,3 +187,22 @@ class ChatResponseDTO(BaseModel):
 class ChatResponseChunk(BaseModel):
     chunk: str
     metadata: Dict[str, Any] = {}
+
+
+__all__ = [
+    "PreRetrievalType",
+    "RetrievalType",
+    "PostRetrievalType",
+    "SearchResult",
+    "TokenUsage",
+    "RetrievalConfig",
+    "ResponseBehavior",
+    "RetrievalStepResult",
+    "PromptTemplateMessage",
+    "PromptTemplate",
+    "PromptTemplateDTO",
+    "ChatRequest",
+    "ChatResponse",
+    "ChatResponseDTO",
+    "ChatResponseChunk",
+]

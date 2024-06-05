@@ -1,12 +1,11 @@
 import json
 import os
-from typing import List
 import requests
 import pandas as pd
 import plotly.express as px
 from pydantic import ValidationError
 import streamlit as st
-from internal_shared.ai_models import AvailableModels
+from internal_shared.models.ai import AvailableModels
 from internal_shared.models.chat import (
     ChatRequest,
     ChatResponseChunk,
