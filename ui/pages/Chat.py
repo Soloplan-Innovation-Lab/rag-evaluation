@@ -119,8 +119,6 @@ def get_prompt_templates():
     )
     if response.status_code == 200:
         return response.json()
-    else:
-        st.error(f"{response.status_code}: {response.reason}")
 
 
 def create_prompt_template(name: str, template: str):
@@ -194,7 +192,7 @@ col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
     with st.container(border=True, height=_MAIN_CONTAINER_HEIGHT):
         st.subheader("Setup")
-        prompt_templates = get_prompt_templates()
+        prompt_templates = get_prompt_templates() or []
         prompt_template_choice = st.selectbox(
             "Select Prompt Template",
             options=["Create New"]
