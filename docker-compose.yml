@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   evaluation:
-    image: tiangolo/uvicorn-gunicorn-fastapi:latest
+    image: evaluation_app_image
     container_name: evaluation_app
     build:
       context: .
@@ -14,7 +14,7 @@ services:
     env_file: .env
 
   rag_pipeline:
-    image: tiangolo/uvicorn-gunicorn-fastapi:latest
+    image: rag_pipeline_image
     container_name: rag_pipeline
     build:
       context: .
@@ -27,7 +27,7 @@ services:
     env_file: .env
 
   ui:
-    image: python:3.11-slim
+    image: streamlit_ui_image
     container_name: streamlit_app
     build:
       context: .

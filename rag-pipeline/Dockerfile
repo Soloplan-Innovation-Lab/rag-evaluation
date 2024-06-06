@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir --upgrade \
     neomodel
 
 # Copy your source files to the /app directory in the container
-COPY ./evaluation/api /app
+COPY ./rag-pipeline/api /app
 COPY ./packages /tmp/packages
 
 RUN pip install --no-cache-dir /tmp/packages/
