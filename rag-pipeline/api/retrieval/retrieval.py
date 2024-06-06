@@ -1,6 +1,5 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from operator import index
 import os
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
@@ -9,7 +8,12 @@ from azure.search.documents import SearchClient
 from azure.search.documents.aio import SearchClient as AsyncSearchClient
 from azure.search.documents.models import VectorizedQuery
 from neomodel import db, config
-from internal_shared.models.chat import RetrievalConfig, SearchResult, RetrievalType
+from internal_shared.models.chat import (
+    RetrievalConfig,
+    RetrieverConfig,
+    SearchResult,
+    RetrievalType,
+)
 
 config.DATABASE_URL = os.getenv("NEO4J_URI")
 
@@ -49,19 +53,18 @@ class RetrievalStrategy(ABC):
 
 
 class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
-    def __init__(self, index_name: str = None) -> None:
-        self.is_default_index = index_name is None
-        self.index_name = index_name or os.getenv("AZURE_AI_SEARCH_INDEX")
+    def __init__(self, retriever: RetrieverConfig) -> None:
+        self.retriver = retriever
 
         self.search_client = SearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=self.index_name,
+            index_name=self.retriver.index_name,
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
         self.async_search_client = AsyncSearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=self.index_name,
+            index_name=self.retriver.index_name,
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
@@ -71,7 +74,7 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
         vector_query = self._get_vectorized_query(query, top_k)
         results = self.search_client.search(
             vector_queries=[vector_query],
-            select=["name", "summary", "content"],
+            select=self.retriver.retriever_select,
         )
         documents = []
         for result in results:
@@ -88,13 +91,9 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
         """
         vector_query = self._get_vectorized_query(query, top_k)
         async with self.async_search_client:
-            if self.is_default_index:
-                select=["name", "summary", "content"]
-            else:
-                select=["chunk", "metadata"]
             results = await self.async_search_client.search(
                 vector_queries=[vector_query],
-                select=select,
+                select=self.retriver.retriever_select,
             )
             documents = []
             async for result in results:
@@ -115,26 +114,34 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
     def _map_single_result(
         self, result: Dict, threshold: float
     ) -> Optional[SearchResult]:
-        if not self.is_default_index:
-            return SearchResult(
-                name=result.get("metadata", {}).get("function_name", ""),
-                summary="",
-                content=result.get("chunk", ""),
-                score=float(result.get("@search.score", 0.0)),
-                type=RetrievalType.VECTOR,
-            )
-
-        if "@search.score" not in result or "content" not in result:
+        if "@search.score" not in result:
             return None
+
+        mapped_results = {}
+
+        for field, mapping in self.retriver.field_mappings.items():
+            value = self._get_nested_value(result, mapping) or result.get(mapping, "")
+            mapped_results[field] = value
+
         if result.get("@search.score", 0.0) < threshold:
             return None
+
         return SearchResult(
-            name=result.get("name", "N/A"),
-            summary=result.get("summary", ""),
-            content=result.get("content", ""),
+            name=mapped_results.get("name", "N/A"),
+            summary=mapped_results.get("summary", ""),
+            content=mapped_results.get("content", ""),
             score=float(result.get("@search.score", 0.0)),
             type=RetrievalType.VECTOR,
         )
+
+    def _get_nested_value(self, d: Dict, keys: str) -> Optional[str]:
+        keys_list = keys.split(".")
+        for key in keys_list:
+            if isinstance(d, dict) and key in d:
+                d = d[key]
+            else:
+                return None
+        return d
 
 
 class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
@@ -197,13 +204,13 @@ class RetrievalStrategyFactory:
 
     @staticmethod
     def create(cfg: RetrievalConfig) -> RetrievalStrategy:
-        match cfg.retrieval_type:
+        match cfg.retriever.retriever_type:
             case RetrievalType.VECTOR:
-                return VectorDatabaseRetrievalStrategy(index_name=cfg.index_name)
+                return VectorDatabaseRetrievalStrategy(cfg.retriever)
             case RetrievalType.GRAPH:
                 return GraphDatabaseRetrievalStrategy()
             case _:
-                raise ValueError(f"Unknown retrieval type: {cfg.retrieval_type}")
+                raise ValueError(f"Unknown retrieval type: {cfg}")
 
 
 class RetrievalStep:

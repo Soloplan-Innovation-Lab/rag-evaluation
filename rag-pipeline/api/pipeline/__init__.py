@@ -20,7 +20,11 @@ from retrieval import (
     RetrievalStep,
     PostRetrievalStep,
 )
-from .helper import calculate_token_str_usage, calculate_token_usage, format_chat_history
+from .helper import (
+    calculate_token_str_usage,
+    calculate_token_usage,
+    format_chat_history,
+)
 
 
 async def execute_pipeline(request: ChatRequest, chat_id: str):
@@ -115,7 +119,7 @@ async def retrieve_documents(
             PreRetrievalStep.execute_async, cfg.pre_retrieval_type, request.query
         )
 
-        embedded_query = await embed_text_async(query)
+        embedded_query = await embed_text_async(query, cfg.retriever.embedding_model)
 
         # retrieval
         ret_time, retrieved_documents = await atime_wrapper(
