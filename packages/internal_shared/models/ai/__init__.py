@@ -1,5 +1,7 @@
 from .available_models import (
     AvailableModels,
+    AvailableEmbeddingModels,
+    AvailableChatModels,
     ModelMetadata,
     GPT_35_TURBO,
     GPT_4,
@@ -11,18 +13,11 @@ from .available_models import (
     EMBEDDING_3_SMALL,
     available_models_to_model_metadata,
 )
-from .evaluation_models import (
-    AzureOpenAI,
-    azure_openai,
-    azure_model,
-    azure_embeddings,
-    critic_llm,
-)
-
-from enum import Enum
 
 __all__ = [
     "AvailableModels",
+    "AvailableEmbeddingModels",
+    "AvailableChatModels",
     "ModelMetadata",
     "GPT_35_TURBO",
     "GPT_4",
@@ -33,9 +28,4 @@ __all__ = [
     "EMBEDDING_3_LARGE",
     "EMBEDDING_3_SMALL",
     "available_models_to_model_metadata",
-    "AzureOpenAI",
-    "azure_openai",
-    "azure_model",
-    "azure_embeddings",
-    "critic_llm",
 ]

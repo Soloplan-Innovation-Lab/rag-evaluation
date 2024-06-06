@@ -28,7 +28,7 @@ from ragas.metrics import (
     context_entity_recall,
     answer_similarity,
 )
-from internal_shared.models.ai import (
+from internal_shared.models.ai.evaluation_models import (
     azure_openai,
     azure_model,
     azure_embeddings,

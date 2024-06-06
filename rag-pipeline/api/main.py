@@ -1,8 +1,8 @@
 from datetime import datetime, UTC
 import os
 from bson import ObjectId
-from typing import List, Optional
-from fastapi import Query, FastAPI, Response, status
+from typing import Optional
+from fastapi import Query, FastAPI, status
 from fastapi.responses import StreamingResponse
 from uvicorn import Config, Server
 from internal_shared.db.mongo import get_async_db
@@ -10,21 +10,28 @@ from internal_shared.logger import get_logger
 from internal_shared.models.chat import (
     ChatRequest,
     ChatResponse,
-    PromptTemplate,
 )
 from pipeline import execute_pipeline, execute_pipeline_streaming
 from uuid import uuid4
 
+from routers import retriever_config, prompt_template
+
 _RAG_PIPELINE_DB = "rag_pipeline"
 
 app = FastAPI()
+
+app.include_router(retriever_config.router)
+app.include_router(prompt_template.router)
 
 logger = get_logger(__name__)
 
 
 @app.get("/")
 def ping():
-    return {"status": status.HTTP_200_OK}
+    return {
+        "status": status.HTTP_200_OK,
+        "message": "Hello from the RAG pipeline API endpoint",
+    }
 
 
 @app.post(
@@ -90,96 +97,6 @@ async def get_response(
     if date_query:
         query["_id"] = date_query
     return {"status": status.HTTP_200_OK}
-
-
-# endpoints to handle prompt templates
-@app.post(
-    "/prompt_template",
-    summary="Create a prompt template",
-    description="Create a prompt template to be used for generating responses",
-    response_description="The ID of the created template",
-    response_model=str,
-    response_model_by_alias=False,
-)
-async def create_template(template: PromptTemplate):
-    db = await get_async_db(_RAG_PIPELINE_DB)
-    if db is not None:
-        template_dto = template.to_dto_dict()
-        result = await db.prompt_template.insert_one(template_dto)
-        return Response(
-            status_code=status.HTTP_201_CREATED, content=str(result.inserted_id)
-        )
-    return Response(
-        "Database not found", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
-
-
-@app.get(
-    "/prompt_template",
-    description="Get all prompt templates",
-    response_description="A list of prompt templates",
-    response_model=List[PromptTemplate],
-    response_model_by_alias=False,
-)
-async def get_templates(skip: int = 0, limit: int = 100):
-    db = await get_async_db(_RAG_PIPELINE_DB)
-    if db is not None:
-        templates = (
-            await db.prompt_template.find({})
-            .skip(skip)
-            .limit(limit)
-            .to_list(length=limit)
-        )
-        return templates
-    return Response(
-        content="Database not found", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
-
-
-@app.put(
-    "/prompt_template/{template}",
-    description="Update a prompt template",
-    response_description="The ID of the updated template",
-    response_model=str,
-    response_model_by_alias=False,
-)
-async def update_template(template: str, new_template: PromptTemplate):
-    db = await get_async_db(_RAG_PIPELINE_DB)
-    if db is not None:
-        if not ObjectId.is_valid(template):
-            result = await db.prompt_template.update_one(
-                {"_id": ObjectId(template)}, {"$set": new_template.to_dto_dict()}
-            )
-        else:
-            result = await db.prompt_template.update_one(
-                {"name": template}, {"$set": new_template.to_dto_dict()}
-            )
-        return Response(
-            status_code=status.HTTP_200_OK, content=str(result.modified_count)
-        )
-    return Response(
-        "Database not found", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
-
-
-@app.delete(
-    "/prompt_template/{template}",
-    description="Delete a prompt template",
-    response_description="The ID of the deleted template",
-    response_model=str,
-    response_model_by_alias=False,
-)
-async def delete_template(template: str):
-    # check if object id, else delete by name
-    db = await get_async_db(_RAG_PIPELINE_DB)
-    if db is not None:
-        if ObjectId.is_valid(template):
-            result = await db.prompt_template.delete_one({"_id": ObjectId(template)})
-        else:
-            result = await db.prompt_template.delete_one({"name": template})
-        return Response(
-            status_code=status.HTTP_200_OK, content=str(result.deleted_count)
-        )
 
 
 def main():

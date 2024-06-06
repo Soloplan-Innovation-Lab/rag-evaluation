@@ -2,19 +2,43 @@ from dataclasses import dataclass, field
 from enum import Enum
 from internal_shared.utils.helper_functions import get_env_variable
 
+
 class AvailableModels(str, Enum):
     """
     Enum for available models.
     """
 
-    GPT_35_TURBO = 'gpt-35-turbo'
-    GPT_4 = 'gpt-4'
-    GPT_4_32K = 'gpt-4-32k'
-    GPT_4_TURBO = 'gpt-4-turbo'
-    GPT_4O = 'gpt-4o'
-    EMBEDDING_3_LARGE = 'text-embedding-3-large'
-    EMBEDDING_3_SMALL = 'text-embedding-3-small'
-    EMBEDDING_2 = 'text-embedding-2'
+    GPT_35_TURBO = "gpt-35-turbo"
+    GPT_4 = "gpt-4"
+    GPT_4_32K = "gpt-4-32k"
+    GPT_4_TURBO = "gpt-4-turbo"
+    GPT_4O = "gpt-4o"
+    EMBEDDING_3_LARGE = "text-embedding-3-large"
+    EMBEDDING_3_SMALL = "text-embedding-3-small"
+    EMBEDDING_2 = "text-embedding-2"
+
+
+class AvailableEmbeddingModels(str, Enum):
+    """
+    Enum for available embedding models.
+    """
+
+    EMBEDDING_3_LARGE = AvailableModels.EMBEDDING_3_LARGE
+    EMBEDDING_3_SMALL = AvailableModels.EMBEDDING_3_SMALL
+    EMBEDDING_2 = AvailableModels.EMBEDDING_2
+
+
+class AvailableChatModels(str, Enum):
+    """
+    Enum for available chat models.
+    """
+
+    GPT_35_TURBO = AvailableModels.GPT_35_TURBO
+    GPT_4 = AvailableModels.GPT_4
+    GPT_4_32K = AvailableModels.GPT_4_32K
+    GPT_4_TURBO = AvailableModels.GPT_4_TURBO
+    GPT_4O = AvailableModels.GPT_4O
+
 
 @dataclass(frozen=True)
 class ModelMetadata:

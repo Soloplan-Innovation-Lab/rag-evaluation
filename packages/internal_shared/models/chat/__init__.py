@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from typing_extensions import Annotated
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
-from internal_shared.models.ai import AvailableModels
+from internal_shared.models.ai import AvailableModels, AvailableEmbeddingModels
 
 DEFAULT_MODEL = AvailableModels.GPT_4O
 
@@ -48,11 +48,49 @@ class TokenUsage(BaseModel):
     total_tokens: int
 
 
+class RetrieverConfig(BaseModel):
+    """Configuration for a retriever."""
+
+    retriever_name: str
+    retriever_type: RetrievalType
+    index_name: str
+    embedding_model: AvailableEmbeddingModels = (
+        AvailableEmbeddingModels.EMBEDDING_3_LARGE
+    )
+
+    def to_dto(self):
+        return RetrieverConfigDTO(**self.model_dump(by_alias=True), id=None)
+
+    def to_dto_dict(self):
+        dto = self.to_dto()
+        return dto.model_dump(by_alias=True, exclude=["id"])
+
+
+class RetrieverConfigDTO(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+
+    retriever_name: str
+    retriever_type: RetrievalType
+    index_name: str
+    embedding_model: AvailableEmbeddingModels = (
+        AvailableEmbeddingModels.EMBEDDING_3_LARGE
+    )
+
+    def to_model(self):
+        return RetrieverConfig(**self.model_dump(by_alias=True, exclude=["id"]))
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str},
+    )
+
+
 class RetrievalConfig(BaseModel):
     """Configuration for a retrieval step."""
 
+    retriever: RetrieverConfig
     context_key: str = "context"
-    index_name: str | None = None
     retrieval_type: RetrievalType
     pre_retrieval_type: PreRetrievalType
     post_retrieval_type: PostRetrievalType
@@ -81,13 +119,6 @@ class RetrievalStepResult(BaseModel):
     retrieval_duration: float
     post_retrieval: List[SearchResult]
     post_retrieval_duration: float
-
-
-class PromptTemplateMessage(BaseModel):
-    """A message in a prompt template."""
-
-    message_type: str
-    message: str
 
 
 class PromptTemplate(BaseModel):
@@ -198,7 +229,6 @@ __all__ = [
     "RetrievalConfig",
     "ResponseBehavior",
     "RetrievalStepResult",
-    "PromptTemplateMessage",
     "PromptTemplate",
     "PromptTemplateDTO",
     "ChatRequest",

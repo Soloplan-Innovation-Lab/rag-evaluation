@@ -1,5 +1,6 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from operator import index
 import os
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
@@ -49,15 +50,18 @@ class RetrievalStrategy(ABC):
 
 class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
     def __init__(self, index_name: str = None) -> None:
+        self.is_default_index = index_name is None
+        self.index_name = index_name or os.getenv("AZURE_AI_SEARCH_INDEX")
+
         self.search_client = SearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=index_name or os.getenv("AZURE_AI_SEARCH_INDEX"),
+            index_name=self.index_name,
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
         self.async_search_client = AsyncSearchClient(
             endpoint=os.getenv("AZURE_AI_SEARCH_ENDPOINT"),
-            index_name=index_name or os.getenv("AZURE_AI_SEARCH_INDEX"),
+            index_name=self.index_name,
             credential=AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY")),
         )
 
@@ -84,9 +88,13 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
         """
         vector_query = self._get_vectorized_query(query, top_k)
         async with self.async_search_client:
+            if self.is_default_index:
+                select=["name", "summary", "content"]
+            else:
+                select=["chunk", "metadata"]
             results = await self.async_search_client.search(
                 vector_queries=[vector_query],
-                select=["name", "summary", "content"],
+                select=select,
             )
             documents = []
             async for result in results:
@@ -107,6 +115,15 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
     def _map_single_result(
         self, result: Dict, threshold: float
     ) -> Optional[SearchResult]:
+        if not self.is_default_index:
+            return SearchResult(
+                name=result.get("metadata", {}).get("function_name", ""),
+                summary="",
+                content=result.get("chunk", ""),
+                score=float(result.get("@search.score", 0.0)),
+                type=RetrievalType.VECTOR,
+            )
+
         if "@search.score" not in result or "content" not in result:
             return None
         if result.get("@search.score", 0.0) < threshold:
