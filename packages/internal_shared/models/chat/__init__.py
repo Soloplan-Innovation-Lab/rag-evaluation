@@ -1,10 +1,15 @@
 from enum import Enum
 from bson import ObjectId
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Self, Tuple
 from typing_extensions import Annotated
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    model_validator,
+)
 from pydantic.functional_validators import BeforeValidator
-from internal_shared.models.ai import AvailableModels, AvailableEmbeddingModels
+from internal_shared.models.ai import AvailableModels
 
 DEFAULT_MODEL = AvailableModels.GPT_4O
 
@@ -53,10 +58,25 @@ class RetrieverConfig(BaseModel):
 
     retriever_name: str
     retriever_type: RetrievalType
-    index_name: str
-    embedding_model: AvailableEmbeddingModels = (
-        AvailableEmbeddingModels.EMBEDDING_3_LARGE
-    )
+    index_name: str | None = None
+    embedding_model: AvailableModels = AvailableModels.EMBEDDING_3_LARGE
+    retriever_select: List[str] | None = None
+    field_mappings: Dict[str, str] | None = None
+
+    @model_validator(mode="after")
+    def check_retriever_config(self) -> Self:
+        if self.retriever_type == RetrievalType.VECTOR:
+            if (
+                not self.index_name
+                or not self.retriever_select
+                or not self.field_mappings
+            ):
+                # error could be more specific, e.g. which field is missing
+                # but this is a good start
+                raise ValueError(
+                    "For VECTOR type, index_name, retriever_select and field_mappings are required"
+                )
+        return self
 
     def to_dto(self):
         return RetrieverConfigDTO(**self.model_dump(by_alias=True), id=None)
@@ -71,10 +91,10 @@ class RetrieverConfigDTO(BaseModel):
 
     retriever_name: str
     retriever_type: RetrievalType
-    index_name: str
-    embedding_model: AvailableEmbeddingModels = (
-        AvailableEmbeddingModels.EMBEDDING_3_LARGE
-    )
+    index_name: str | None = None
+    embedding_model: AvailableModels = AvailableModels.EMBEDDING_3_LARGE
+    retriever_select: List[str] | None = None
+    field_mappings: Dict[str, str] | None = None
 
     def to_model(self):
         return RetrieverConfig(**self.model_dump(by_alias=True, exclude=["id"]))
@@ -91,7 +111,6 @@ class RetrievalConfig(BaseModel):
 
     retriever: RetrieverConfig
     context_key: str = "context"
-    retrieval_type: RetrievalType
     pre_retrieval_type: PreRetrievalType
     post_retrieval_type: PostRetrievalType
     top_k: int = 5

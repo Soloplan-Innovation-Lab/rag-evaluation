@@ -15,29 +15,20 @@ class AvailableModels(str, Enum):
     GPT_4O = "gpt-4o"
     EMBEDDING_3_LARGE = "text-embedding-3-large"
     EMBEDDING_3_SMALL = "text-embedding-3-small"
-    EMBEDDING_2 = "text-embedding-2"
+    EMBEDDING_2 = "text-embedding-ada-002"
 
-
-class AvailableEmbeddingModels(str, Enum):
+def get_embedding_models():
     """
-    Enum for available embedding models.
+    Get the available embedding models.
     """
-
-    EMBEDDING_3_LARGE = AvailableModels.EMBEDDING_3_LARGE
-    EMBEDDING_3_SMALL = AvailableModels.EMBEDDING_3_SMALL
-    EMBEDDING_2 = AvailableModels.EMBEDDING_2
+    return [model for model in AvailableModels if "embedding" in model.value]
 
 
-class AvailableChatModels(str, Enum):
+def get_chat_models():
     """
-    Enum for available chat models.
+    Get the available chat models.
     """
-
-    GPT_35_TURBO = AvailableModels.GPT_35_TURBO
-    GPT_4 = AvailableModels.GPT_4
-    GPT_4_32K = AvailableModels.GPT_4_32K
-    GPT_4_TURBO = AvailableModels.GPT_4_TURBO
-    GPT_4O = AvailableModels.GPT_4O
+    return [model for model in AvailableModels if "embedding" not in model.value]
 
 
 @dataclass(frozen=True)
@@ -88,7 +79,7 @@ EMBEDDING_3_SMALL = ModelMetadata.create(
     model_name="text-embedding-3-small", deployment_name="text-embedding-3-small"
 )
 EMBEDDING_2 = ModelMetadata.create(
-    model_name="text-embedding-2", deployment_name="text-embedding-2"
+    model_name="text-embedding-ada-002", deployment_name="text-embedding-ada-002"
 )
 
 
