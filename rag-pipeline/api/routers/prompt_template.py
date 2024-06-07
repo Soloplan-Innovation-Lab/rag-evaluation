@@ -1,5 +1,6 @@
 from typing import List
 from bson import ObjectId
+import bson
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from internal_shared.models.chat import PromptTemplate
@@ -60,7 +61,7 @@ async def update_template(
     new_template: PromptTemplate,
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
-    if not ObjectId.is_valid(template):
+    if bson.is_valid(str.encode(template)):
         result = await db.prompt_template.update_one(
             {"_id": ObjectId(template)}, {"$set": new_template.to_dto_dict()}
         )
@@ -79,7 +80,7 @@ async def update_template(
     response_description="The ID of the deleted template",
 )
 async def delete_template(template: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    if ObjectId.is_valid(template):
+    if bson.is_valid(str.encode(template)):
         result = await db.prompt_template.delete_one({"_id": ObjectId(template)})
     else:
         result = await db.prompt_template.delete_one({"name": template})

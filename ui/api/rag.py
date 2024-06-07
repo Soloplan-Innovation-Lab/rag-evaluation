@@ -35,7 +35,7 @@ def create_response(chat_request: ChatRequest):
         st.session_state.historical_responses.append(response_data)
         return response_data
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def create_stream_response(chat_request: ChatRequest):
@@ -61,7 +61,7 @@ def create_stream_response(chat_request: ChatRequest):
             if chunk_response.metadata:
                 metadata = chunk_response.metadata
     except Exception as e:
-        st.error(e)
+        st.toast(f"{e}", icon=":material/error:")
 
     if metadata:
         st.session_state.response_data = metadata
@@ -80,7 +80,7 @@ def evaluate_request(payload: ChatEvaluationRequest):
     if response.status_code == 200:
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 # HANDLE PROMPT TEMPLATES
@@ -92,24 +92,29 @@ def get_prompt_templates():
         return response.json()
 
 
-def create_prompt_template(name: str, template: str):
-    payload = PromptTemplate(name=name, template=template)
+def create_prompt_template(payload: PromptTemplate):
     response = requests.post(
         f"{_RAG_API_BASE}/prompt_template",
         json=payload.model_dump(by_alias=True),
     )
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Prompt template created", icon=":material/check:"
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def delete_prompt_template(template: str):
     response = requests.delete(f"{_RAG_API_BASE}/prompt_template/{template}")
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Prompt template deleted", icon=":material/check:"
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def update_prompt_template(template: str, payload: PromptTemplate):
@@ -118,9 +123,12 @@ def update_prompt_template(template: str, payload: PromptTemplate):
         json=payload.model_dump(by_alias=True),
     )
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Prompt template updated", icon=":material/check:"
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 # HANDLE RETRIEVER CONFIGURATION
@@ -129,7 +137,7 @@ def get_retriever_configs():
     if response.ok:
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def create_retriever_config(payload: RetrieverConfig):
@@ -138,17 +146,25 @@ def create_retriever_config(payload: RetrieverConfig):
         json=payload.model_dump(by_alias=True),
     )
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Retriever configuration created",
+            icon=":material/check:",
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def delete_retriever_config(retriever_name: str):
     response = requests.delete(f"{_RAG_API_BASE}/retriever_config/{retriever_name}")
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Retriever configuration deleted",
+            icon=":material/check:",
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")
 
 
 def update_retriever_config(retriever_name: str, payload: RetrieverConfig):
@@ -157,6 +173,10 @@ def update_retriever_config(retriever_name: str, payload: RetrieverConfig):
         json=payload.model_dump(by_alias=True),
     )
     if response.ok:
+        st.toast(
+            f"{response.status_code}: Retriever configuration updated",
+            icon=":material/check:",
+        )
         return response.json()
     else:
-        st.error(f"{response.status_code}: {response.reason}")
+        st.toast(f"{response.status_code}: {response.reason}", icon=":material/error:")

@@ -1,5 +1,6 @@
 from typing import List
 from bson import ObjectId
+import bson
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from internal_shared.models.chat import RetrieverConfig
@@ -64,9 +65,14 @@ async def update_retriever(
     new_config: RetrieverConfig,
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
-    result = await db.retriever_config.update_one(
-        {"_id": ObjectId(config_id)}, {"$set": new_config.to_dto_dict()}
-    )
+    if bson.is_valid(str.encode(config_id)):
+        result = await db.retriever_config.update_one(
+            {"_id": ObjectId(config_id)}, {"$set": new_config.to_dto_dict()}
+        )
+    else:
+        result = await db.retriever_config.update_one(
+            {"retriever_name": config_id}, {"$set": new_config.to_dto_dict()}
+        )
     return JSONResponse(
         status_code=status.HTTP_200_OK, content={"id": str(result.upserted_id)}
     )
@@ -80,7 +86,7 @@ async def update_retriever(
     response_model_by_alias=False,
 )
 async def delete_retriever(config_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    if ObjectId.is_valid(config_id):
+    if bson.is_valid(str.encode(config_id)):
         result = await db.retriever_config.delete_one({"_id": ObjectId(config_id)})
     else:
         result = await db.retriever_config.delete_one({"retriever_name": config_id})

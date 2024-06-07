@@ -2,7 +2,7 @@ import streamlit as st
 from internal_shared.models.ai import AvailableModels, get_embedding_models
 from internal_shared.models.chat import (
     PromptTemplate,
-    RetrievalType,
+    RetrieverType,
     RetrieverConfig,
 )
 from api.rag import (
@@ -40,7 +40,7 @@ def handle_retriever_config():
         retriever_name = st.text_input("Retriever Name", key="retriever_name")
         retriever_type = st.selectbox(
             "Retriever Type",
-            options=[model.name for model in RetrievalType],
+            options=[model.name for model in RetrieverType],
             key="retriever_type",
         )
         index_name = st.text_input("Index Name", key="index_name")
@@ -69,7 +69,7 @@ def handle_retriever_config():
 
         if submit_button:
             # if retriever_type == RetrievalType.GRAPH: set index_name, retriever_select, field_mappings to None
-            if retriever_type == RetrievalType.GRAPH.name:
+            if retriever_type == RetrieverType.GRAPH.name:
                 index_name = None
                 retriever_select = None
                 mappings = None
@@ -77,7 +77,7 @@ def handle_retriever_config():
             cfg = RetrieverConfig(
                 retriever_name=retriever_name,
                 retriever_type=(
-                    RetrievalType[retriever_type] if retriever_type else None
+                    RetrieverType[retriever_type] if retriever_type else None
                 ),
                 index_name=index_name,
                 embedding_model=(
@@ -94,31 +94,56 @@ def handle_retriever_config():
 
 def handle_prompt_templates():
     st.subheader("Prompt templates")
+
     prompt_templates = get_prompt_templates() or []
     prompt_template_choice = st.selectbox(
         "Select Prompt Template",
         options=["Create New"] + [template["name"] for template in prompt_templates],
         key="template_choice",
     )
-    p1 = st.empty()
-    p2 = st.empty()
+
+    template_name = ""
+    template_content = ""
+    few_shot_key = ""
+    few_shot_value = ""
+
+    def get_template_content(templates: list, choice: str):
+        template_dict = next(
+            (template for template in templates if template["name"] == choice),
+            None,
+        )
+        return PromptTemplate.model_validate(template_dict) if template_dict else None
+
+    if prompt_template_choice != "Create New":
+        selected_template = get_template_content(
+            prompt_templates, prompt_template_choice
+        )
+        if selected_template:
+            template_name = selected_template.name
+            template_content = selected_template.template
+            few_shot_key = selected_template.few_shot_key or ""
+            few_shot_value = selected_template.few_shot_value or ""
+
+    template_name = st.text_input("Template Name", value=template_name)
+    template_content = st.text_area("Template Content", value=template_content)
+    with st.expander("Few Shot Configuration"):
+        few_shot_key = st.text_input("Few Shot Key", value=few_shot_key)
+        few_shot_value = st.text_area("Few Shot Value", value=few_shot_value)
+
     sb1, sb2 = st.columns([1, 1])
-    template_name = p1.text_input("Template Name")
-    template_content = p2.text_area("Template Content")
 
     if prompt_template_choice == "Create New":
-        if st.button("Create Template"):
-            create_prompt_template(template_name, template_content)
+        with sb1:
+            if st.button("Create Template"):
+                create_prompt_template(
+                    PromptTemplate(
+                        name=template_name,
+                        template=template_content,
+                        few_shot_key=few_shot_key if few_shot_key else None,
+                        few_shot_value=few_shot_value if few_shot_value else None,
+                    )
+                )
     else:
-        template_name = p1.text_input("Template Name", value=prompt_template_choice)
-        template_content = p2.text_area(
-            "Template Content",
-            value=[
-                template["template"]
-                for template in prompt_templates
-                if template["name"] == prompt_template_choice
-            ][0],
-        )
         with sb1:
             if st.button("Delete Template"):
                 delete_prompt_template(prompt_template_choice)
@@ -126,7 +151,12 @@ def handle_prompt_templates():
             if st.button("Update Template"):
                 update_prompt_template(
                     prompt_template_choice,
-                    PromptTemplate(name=template_name, template=template_content),
+                    PromptTemplate(
+                        name=template_name,
+                        template=template_content,
+                        few_shot_key=few_shot_key if few_shot_key else None,
+                        few_shot_value=few_shot_value if few_shot_value else None,
+                    ),
                 )
 
     st.session_state["template_name"] = template_name

@@ -19,5 +19,8 @@ def get_prompt_template() -> PromptTemplate | None:
     )
 
     return PromptTemplate(
-        name=prompt_template["name"], template=prompt_template["template"]
+        name=prompt_template["name"],
+        template=prompt_template["template"],
+        few_shot_key=prompt_template["few_shot_key"],
+        few_shot_value=prompt_template["few_shot_value"],
     )

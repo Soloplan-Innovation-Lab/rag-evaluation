@@ -28,7 +28,7 @@ class PreRetrievalType(str, Enum):
     REPHRASE_AND_RESPOND = "rephrase_and_respond"
 
 
-class RetrievalType(str, Enum):
+class RetrieverType(str, Enum):
     VECTOR = "vector"
     GRAPH = "graph"
 
@@ -38,11 +38,13 @@ class PostRetrievalType(str, Enum):
 
 
 class SearchResult(BaseModel):
+    """A single search result during the retrieval step."""
+
     name: str
     summary: str
     content: str
     score: float
-    type: RetrievalType
+    type: RetrieverType
 
 
 class TokenUsage(BaseModel):
@@ -53,19 +55,23 @@ class TokenUsage(BaseModel):
     total_tokens: int
 
 
-class RetrieverConfig(BaseModel):
-    """Configuration for a retriever."""
+class BaseRetrieverConfig(BaseModel):
+    """Base configuration for a retriever."""
 
     retriever_name: str
-    retriever_type: RetrievalType
+    retriever_type: RetrieverType
     index_name: str | None = None
     embedding_model: AvailableModels = AvailableModels.EMBEDDING_3_LARGE
     retriever_select: List[str] | None = None
     field_mappings: Dict[str, str] | None = None
 
+
+class RetrieverConfig(BaseRetrieverConfig):
+    """Configuration for a retriever."""
+
     @model_validator(mode="after")
     def check_retriever_config(self) -> Self:
-        if self.retriever_type == RetrievalType.VECTOR:
+        if self.retriever_type == RetrieverType.VECTOR:
             if (
                 not self.index_name
                 or not self.retriever_select
@@ -86,15 +92,10 @@ class RetrieverConfig(BaseModel):
         return dto.model_dump(by_alias=True, exclude=["id"])
 
 
-class RetrieverConfigDTO(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+class RetrieverConfigDTO(BaseRetrieverConfig):
+    """Database DTO for a retriever configuration."""
 
-    retriever_name: str
-    retriever_type: RetrievalType
-    index_name: str | None = None
-    embedding_model: AvailableModels = AvailableModels.EMBEDDING_3_LARGE
-    retriever_select: List[str] | None = None
-    field_mappings: Dict[str, str] | None = None
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
 
     def to_model(self):
         return RetrieverConfig(**self.model_dump(by_alias=True, exclude=["id"]))
@@ -140,11 +141,17 @@ class RetrievalStepResult(BaseModel):
     post_retrieval_duration: float
 
 
-class PromptTemplate(BaseModel):
-    """A prompt template."""
+class BasePromptTemplate(BaseModel):
+    """Base class for a prompt template."""
 
     name: str
     template: str
+    few_shot_key: str | None = None
+    few_shot_value: str | None = None
+
+
+class PromptTemplate(BasePromptTemplate):
+    """A prompt template."""
 
     def to_dto(self):
         return PromptTemplateDTO(**self.model_dump(by_alias=True), id=None)
@@ -154,11 +161,10 @@ class PromptTemplate(BaseModel):
         return dto.model_dump(by_alias=True, exclude=["id"])
 
 
-class PromptTemplateDTO(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+class PromptTemplateDTO(BasePromptTemplate):
+    """Database DTO for a prompt template."""
 
-    name: str
-    template: str
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
 
     def to_model(self):
         return PromptTemplate(**self.model_dump(by_alias=True, exclude=["id"]))
@@ -171,9 +177,7 @@ class PromptTemplateDTO(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    """
-    Request type for the chat API.
-    """
+    """Request type for the chat API."""
 
     query: str
     retrieval_behaviour: List[RetrievalConfig]
@@ -182,7 +186,24 @@ class ChatRequest(BaseModel):
     history: List[Tuple[str, str]] = []
 
 
-class ChatResponse(BaseModel):
+class BaseChatResponse(BaseModel):
+    """
+    Base response type for the chat API.
+
+    Contains the response, the documents retrieved, and metadata.
+    """
+
+    response: str
+    documents: List[str] = []
+    request: str
+    rendered_prompt: str | None = None
+    model: AvailableModels = DEFAULT_MODEL
+    response_duration: float = 0.0
+    token_usage: TokenUsage | None = None
+    steps: List[RetrievalStepResult] | None = None
+
+
+class ChatResponse(BaseChatResponse):
     """
     Response type for the chat API.
 
@@ -190,16 +211,6 @@ class ChatResponse(BaseModel):
     """
 
     chat_session_id: str
-
-    # most interesting fields
-    response: str
-    documents: List[str] = []
-    # metadata
-    request: str
-    model: AvailableModels = DEFAULT_MODEL
-    response_duration: float = 0.0
-    token_usage: TokenUsage | None = None
-    steps: List[RetrievalStepResult] | None = None
 
     def to_dto(self):
         return ChatResponseDTO(**self.model_dump(by_alias=True), id=None)
@@ -209,20 +220,11 @@ class ChatResponse(BaseModel):
         return dto.model_dump(by_alias=True, exclude=["id"])
 
 
-class ChatResponseDTO(BaseModel):
-    # mongodb id field
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+class ChatResponseDTO(BaseChatResponse):
+    """Database DTO for the chat response."""
 
-    # most interesting fields
-    response: str
-    documents: List[str] = []
-    # metadata
-    request: str
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
     chat_session_id: Optional[str] = None
-    model: AvailableModels = DEFAULT_MODEL
-    response_duration: float = 0.0
-    token_usage: TokenUsage | None = None
-    steps: List[RetrievalStepResult] | None = None
 
     def to_model(self):
         return ChatResponse(**self.model_dump(by_alias=True, exclude=["id"]))
@@ -235,13 +237,15 @@ class ChatResponseDTO(BaseModel):
 
 
 class ChatResponseChunk(BaseModel):
+    """A response chunk for the streaming chat API."""
+
     chunk: str
     metadata: Dict[str, Any] = {}
 
 
 __all__ = [
     "PreRetrievalType",
-    "RetrievalType",
+    "RetrieverType",
     "PostRetrievalType",
     "SearchResult",
     "TokenUsage",

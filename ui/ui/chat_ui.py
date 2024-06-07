@@ -7,9 +7,7 @@ from internal_shared.models.chat import (
     ChatRequest,
     PostRetrievalType,
     PreRetrievalType,
-    PromptTemplate,
     RetrievalConfig,
-    RetrievalType,
 )
 from internal_shared.models.evaluation import ChatEvaluationRequest
 from api.rag import (
@@ -55,9 +53,9 @@ def open_preview_dialog():
             )
             st.json(chat_request.model_dump_json(by_alias=True, exclude=["id"]))
         else:
-            st.error("Prompt template not found.")
+            st.toast("Prompt template not found.", icon=":material/error:")
     except ValidationError as e:
-        st.error(f"Validation Error: {e}")
+        st.toast(f"{e}", icon=":material/error:")
 
 
 def chat_area():
@@ -83,26 +81,21 @@ def chat_area():
             with st.chat_message("user"):
                 st.markdown(prompt)
 
-        chat_request = ChatRequest(
-            query=prompt,
-            retrieval_behaviour=[
-                RetrievalConfig(**config)
-                for config in st.session_state["retrieval_behaviours"]
-            ],
-            model=AvailableModels[st.session_state.get("active_model")],
-            prompt_template=(
-                PromptTemplate(
-                    name=st.session_state.get("template_name"),
-                    template=st.session_state.get("template_content"),
-                )
-                if st.session_state.get("template_name")
-                else None
-            ),
-            history=[],
-        )
+        def _create_chat_request():
+            pt = get_prompt_template()
+            return ChatRequest(
+                query=prompt,
+                retrieval_behaviour=[
+                    RetrievalConfig(**config)
+                    for config in st.session_state["retrieval_behaviours"]
+                ],
+                model=AvailableModels[st.session_state.get("active_model")],
+                prompt_template=pt,
+                history=[],
+            )
 
         if st.session_state.get("streaming", False):
-            response_generator = create_stream_response(chat_request)
+            response_generator = create_stream_response(_create_chat_request())
             assistant_response = ""
             with chat_container:
                 with st.chat_message("assistant"):
@@ -113,7 +106,7 @@ def chat_area():
                         response_placeholder.markdown("".join(response_chunks))
                     assistant_response = "".join(response_chunks)
         else:
-            response_data = create_response(chat_request)
+            response_data = create_response(_create_chat_request())
             if response_data:
                 response = response_data.get(
                     "response", "An error occurred. Please try again."
@@ -155,6 +148,14 @@ def setup_configuration():
         options=[template["name"] for template in st.session_state.prompt_templates],
         key="template_choice",
     )
+
+    spt = get_prompt_template()
+    if spt:
+        with st.expander("Selected Template Details"):
+            st.markdown(f"**Name:** {spt.name}")
+            h_t = spt.template.replace("{", "`{").replace("}", "}`")
+            st.markdown(f"**Template:** {h_t}")
+
     streaming = st.checkbox("Stream Response", key="streaming")
     evaluation = st.checkbox("Evaluate Response", key="evaluation")
     pre_retrieval_types = [e.value for e in PreRetrievalType]

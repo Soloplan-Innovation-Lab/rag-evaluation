@@ -12,7 +12,7 @@ from internal_shared.models.chat import (
     RetrievalConfig,
     RetrieverConfig,
     SearchResult,
-    RetrievalType,
+    RetrieverType,
 )
 
 config.DATABASE_URL = os.getenv("NEO4J_URI")
@@ -131,7 +131,7 @@ class VectorDatabaseRetrievalStrategy(RetrievalStrategy):
             summary=mapped_results.get("summary", ""),
             content=mapped_results.get("content", ""),
             score=float(result.get("@search.score", 0.0)),
-            type=RetrievalType.VECTOR,
+            type=RetrieverType.VECTOR,
         )
 
     def _get_nested_value(self, d: Dict, keys: str) -> Optional[str]:
@@ -171,7 +171,7 @@ class GraphDatabaseRetrievalStrategy(RetrievalStrategy):
                     summary=result[1],
                     content=f"{result[0]} ({result[1]}) references {result[2]}",
                     score=result[3],
-                    type=RetrievalType.GRAPH,
+                    type=RetrieverType.GRAPH,
                 )
             )
 
@@ -205,9 +205,9 @@ class RetrievalStrategyFactory:
     @staticmethod
     def create(cfg: RetrievalConfig) -> RetrievalStrategy:
         match cfg.retriever.retriever_type:
-            case RetrievalType.VECTOR:
+            case RetrieverType.VECTOR:
                 return VectorDatabaseRetrievalStrategy(cfg.retriever)
-            case RetrievalType.GRAPH:
+            case RetrieverType.GRAPH:
                 return GraphDatabaseRetrievalStrategy()
             case _:
                 raise ValueError(f"Unknown retrieval type: {cfg}")

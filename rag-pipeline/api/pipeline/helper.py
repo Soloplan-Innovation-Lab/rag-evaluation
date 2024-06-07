@@ -81,3 +81,9 @@ def summarize_chat_history(history: List[Tuple[str, str]]):
     # return history
 
     return history[-10:]
+
+def format_context_documents(context : Dict[str, List[str]]):
+    return [item for sublist in context.values() for item in sublist]
+
+def render_prompt(prompt: List[BaseMessage]):
+    return "".join([f"{p.type}: {p.content}" for p in prompt])

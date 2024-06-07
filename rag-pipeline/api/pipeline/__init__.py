@@ -11,6 +11,7 @@ from internal_shared.models.chat import (
     PostRetrievalType,
 )
 from internal_shared.utils.timer import atime_wrapper
+from internal_shared.logger import get_logger
 from typing import Dict, List, Tuple
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import BaseMessageChunk
@@ -24,7 +25,11 @@ from .helper import (
     calculate_token_str_usage,
     calculate_token_usage,
     format_chat_history,
+    format_context_documents,
+    render_prompt,
 )
+
+logger = get_logger(__name__)
 
 
 async def execute_pipeline(request: ChatRequest, chat_id: str):
@@ -43,11 +48,18 @@ async def execute_pipeline(request: ChatRequest, chat_id: str):
     # calculate token usage
     token_usage = calculate_token_usage(prompt, response, request.model)
 
+    # format the context for the response
+    context_docs = format_context_documents(context)
+
+    # render the prompt; currently disabled, makes the response too long
+    # rendered_prompt = render_prompt(prompt)
+
     return ChatResponse(
         chat_session_id=chat_id,
         response=response.content,
-        documents=context,
+        documents=context_docs,
         request=request.query,
+        rendered_prompt=None,
         model=request.model,
         response_duration=res_time,
         token_usage=token_usage,
@@ -75,12 +87,19 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
         [p.content for p in prompt], response, request.model
     )
 
+    # format the context for the response
+    context_docs = format_context_documents(context)
+
+    # render the prompt
+    #rendered_prompt = render_prompt(prompt)
+
     # Send final response metadata as an empty chunk with complete metadata
     final_response_metadata = ChatResponse(
         chat_session_id=chat_id,
         response=response,
-        documents=[item for sublist in context.values() for item in sublist],
+        documents=context_docs,
         request=request.query,
+        rendered_prompt=None,
         model=request.model,
         response_duration=elapsed_time,
         token_usage=token_usage,
@@ -171,6 +190,11 @@ async def prepare_prompt(request: ChatRequest, context: Dict[str, List[str]]):
     """
 
     context_strings = {key: "\n".join(value) for key, value in context.items()}
+
+    if request.prompt_template.few_shot_key and request.prompt_template.few_shot_value:
+        context_strings[request.prompt_template.few_shot_key] = (
+            request.prompt_template.few_shot_value
+        )
 
     chat_template = ChatPromptTemplate.from_messages(
         [
