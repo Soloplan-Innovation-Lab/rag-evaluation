@@ -6,6 +6,7 @@ data-generation/data/
 data-generation/test/
 devcontainer.env
 tmp/
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
