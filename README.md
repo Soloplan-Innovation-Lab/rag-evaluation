@@ -10,27 +10,18 @@ For more detailed information on how these metrics are calculated, refer to the 
    
 To run the evaluation, start the Docker container and use the `/evaluate` endpoint to submit your data. Evaluation results are stored in MongoDB, and metrics are calculated by comparing the real results with the expected ones. For more information on the evaluation process, refer to the specific notebooks and documentation within the [evaluation](./evaluation/) folder.
 
-## Synthetic data generation
-   
-Creating a synthetic test dataset is advantageous for evaluating LLM applications, as it can address the limitations of human-generated questions. Frameworks like [ragas](https://docs.ragas.io/en/stable/concepts/testset_generation.html#why-synthetic-test-data) use data evolution methods to generate diverse and challenging datasets, crucial for a thorough evaluation. This method is detailed in the [Evol-Instruct and WizardLM](https://arxiv.org/pdf/2304.12244) paper.  
-   
-For more information, refer to the [ragas documentation](https://docs.ragas.io/en/stable/concepts/testset_generation.html#how-does-ragas-differ-in-test-data-generation) or the [deepeval blog](https://www.confident-ai.com/blog/the-definitive-guide-to-synthetic-data-generation-using-llms).  
-   
-Currently, the implementation of synthetic data generation is incomplete. While frameworks perform well for simple Q&A tasks, more complex tasks like formula or workflow creation require a manual approach. Test implementations are available in the `data_generation_tests.ipynb` notebook. For more information, check the specific notebook and documentation within the [data-generation](./data-generation/) folder.
+## RAG pipeline
 
+To evaluate requests and responses, a RAG pipeline prototype is implemented. This prototype allows for the optimization of the RAG pipeline by testing different approaches for the pre-retrieval and post-retrieval stages. The pre-retrieval stage alters the initial query, while the post-retrieval stage enhances the retrieved documents. The pipeline can be optimized by trying different approaches for each stage.
 
-## Domain Knowledge  
-   
-This folder extracts detailed domain knowledge from the documentation and transforms it for use in both a vector database and a knowledge graph. The process involves two key functions: domain knowledge extraction and knowledge graph creation.  
-   
-**Domain Knowledge Extraction** involves extracting detailed interface descriptions and metadata from DocFX documentation. The extracted data is then transformed into raw text and metadata files, which can be used in a vector database.  
-   
-**Knowledge Graph Creation** constructs a Neo4j graph using the extracted domain knowledge. It utilizes type references to establish relationships between different interfaces and creates vector embeddings for natural language access and advanced querying.  
-   
-### Advantages of Using Neo4j with Vector Embeddings  
-Using Neo4j with vector embeddings offers several advantages:  
-- **Hybrid Queries**: Combines vector similarity searches with graph traversal.  
-- **Contextual Relevance**: Refines and contextualizes results using graph structure.  
-- **Graph Algorithms**: Enhances analysis with algorithms like PageRank and community detection.  
-   
-For more detailed information, refer to the specific notebooks and documentation within the [domain knowledge](./domain-knowledge/) folder.
+To create different approaches, the request includes the configuration of the retrieval steps, thus describing the retrieval behaviour. The following concept overview shows the different stages of the RAG pipeline:
+
+![RAG pipeline concept overview](./rag-pipeline/retrieval_pipeline.png "RAG pipeline overview")
+
+For more information about the different approaches and the RAG pipeline, refer to the [rag-pipeline](./rag-pipeline/) folder.
+
+## Evaluation and Test Playground
+
+To interactively test pipeline steps and configure the behaviour, a playground is provided. This playground can be used to interact with global settings, such as new system prompt templates and retriever configurations (e.g. the vector or graph database and its output mapping). These settings can be used to test different pipeline configurations and prompts. The chat window allows for interactive testing of the pipeline steps.
+
+For more information on how to use the playground, refer to the [playground](./playground/) folder.
