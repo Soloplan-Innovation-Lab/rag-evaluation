@@ -235,3 +235,23 @@ class RetrievalStep:
         """
         retrieval = RetrievalStrategyFactory.create(cfg)
         return await retrieval.execute_async(query, cfg.threshold, cfg.top_k)
+    
+    @staticmethod
+    def get_curated_documents() -> List[str]:
+        """
+        Get curated documents.
+
+        #### Quick Note
+
+        Current basic "workaround" implementation for curated formula context. This is used, because sometimes the request has no similarity with "required" documents. Thus, an analysis lead to these curated documents.
+
+        For more "consistency", a check can be added, if a particular document is already in the retrieved documents. If so, this document can be skipped, as it is already present. Duplicates are not desired.
+        """
+        return [
+            "FunctionName: [IsNullOrEmpty(String)]\nDescription: [Returns True if the specified String object is NULL or an empty string; otherwise, False is returned.]\nExample: [IsNullOrEmpty([ProductName])]",
+            "FunctionName: [ToStr(Value)]\nDescription: [Returns a string representation of a specified value or property.]\nExample: [ToStr([ID])]",
+            "FunctionName: [ItemsToText]\nDescription: [ItemsToText(CollectionPropertyPath, string SelectorExpression, [optional]string ItemToStringExpression, [optional]string Separator, [optional]string OrderExpression, [optional]bool distinct, [optional]bool IgnoreEmptyValues) Creates a textual representation of elements in a list. CollectionPropertyPath = path of the table SelectorExpression = used to select elements from the table ([*], [First], [Last], [n]) ItemToStringExpression = indicates the columns to be displayed, e.g. [Number] Separator = separator, e.g. , (comma) OrderExpression = indicates the column by which sorting is to take place (! = reverse sequence) Distinct = from now on, only unique values are returned. IgnoreEmptyValues = empty values are not displayed.]",
+            "FunctionName: [ItemCount]\nDescription: [ItemCount(CollectionPropertyPath, string SelectorExpression, [optional]bool Distinct, [optional]bool DistinctExpression, [optional]bool IgnoreEmptyValues) Provides the number of list elements. CollectionPropertyPath = Path of the table SelectorExpression = Is used to select elements from the table ([*], [First], [Last], [n]) Distinct = Only unique values are output. DistinctExpression = Columns to be used for the uniqueness check. IgnoreEmptyValues = Empty values are not displayed.]",
+            "FunctionName: [ToStrDate]\nDescription: [ToStrDate(DateTime,FormatString) Example: ToStrDate(Now(), 'yyyyMMdd') => 20191212 yy = year two-digit yyyy = year four-digit M = month in year MM = month two-digit dd = day two-digit hh = hour two-digit mm = minute two-digit ss = second of minute]",
+            "FunctionName: [StrToDateTime]\nDescription: [StrToDateTime(string, [optional]string formatString) Returns a date-time value that is read from a character string. Via the formatString function, you can specify the date-time format or the language as an English name or as a name in the current CarLo® language. Example: StrToDateTime('22.02.2021 11:23', 'dd.MM.yyyy HH.mm ') or StrToDateTime ('05/15/2021 11:23 pm', 'English') yy = year, two digits yyyy = year, four digits M = month in the year MM =month, two digits dd = day, two digits HH = hour, two digits mm = minute, two digits ss = second of the minute ./ = separator]"
+        ]

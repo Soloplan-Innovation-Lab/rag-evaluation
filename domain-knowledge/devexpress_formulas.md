@@ -48,7 +48,7 @@ This XML snippet contains a workflow definition. The root `TypePropertyId` acces
 
 All other parts of the workflow are not discussed in this context, as they are not relevant for the formula creation.
 
-Based on these example, a few-show example for a system prompt template has been created. A request, that could lead to the formula, could look like this:
+Based on this example, a few-show example for a system prompt template has been created. A request, that could lead to the formula, could look like this:
 
 > "Create a formula, that writes all the designations of the vehicle groups of the truck of the current tour to a string separated by a semicolon."
 

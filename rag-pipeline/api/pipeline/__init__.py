@@ -52,14 +52,14 @@ async def execute_pipeline(request: ChatRequest, chat_id: str):
     context_docs = format_context_documents(context)
 
     # render the prompt; currently disabled, makes the response too long
-    # rendered_prompt = render_prompt(prompt)
+    rendered_prompt = render_prompt(prompt)
 
     return ChatResponse(
         chat_session_id=chat_id,
         response=response.content,
         documents=context_docs,
         request=request.query,
-        rendered_prompt=None,
+        rendered_prompt=rendered_prompt,
         model=request.model,
         response_duration=res_time,
         token_usage=token_usage,
@@ -91,7 +91,7 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
     context_docs = format_context_documents(context)
 
     # render the prompt
-    #rendered_prompt = render_prompt(prompt)
+    rendered_prompt = render_prompt(prompt)
 
     # Send final response metadata as an empty chunk with complete metadata
     final_response_metadata = ChatResponse(
@@ -99,7 +99,7 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
         response=response,
         documents=context_docs,
         request=request.query,
-        rendered_prompt=None,
+        rendered_prompt=rendered_prompt,
         model=request.model,
         response_duration=elapsed_time,
         token_usage=token_usage,
@@ -111,6 +111,9 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
     if db is not None:
         response_dto = final_response_metadata.to_dto_dict()
         await db.chat_response.insert_one(response_dto)
+    
+    # set to none before sending back; current workaround!
+    final_response_metadata.rendered_prompt = None
 
     yield json.dumps(
         ChatResponseChunk(
@@ -166,6 +169,9 @@ async def retrieve_documents(
         )
 
         context = [doc.content for doc in post_retrieval_documents]
+
+        if cfg.context_key == "formula_context":
+            context.extend(RetrievalStep.get_curated_documents())
 
         return cfg.context_key, context, step
 

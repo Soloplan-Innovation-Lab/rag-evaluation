@@ -54,6 +54,10 @@ async def chat(request: ChatRequest, chat_id: Optional[str] = None):
     if db is not None:
         response_dto = response.to_dto_dict()
         await db.chat_response.insert_one(response_dto)
+
+    # set rendered prompt to none; current workaround!
+    response.rendered_prompt = None
+
     return response
 
 

@@ -10,7 +10,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// If async SearchClient is not working, make sure to install aiohttp!
-	"postCreateCommand": "pip3 install --user ragas deepeval langchain langchain-openai ipykernel seaborn matplotlib pandas unstructured fastapi-slim[standard] pymongo motor azure-search-documents tiktoken neomodel streamlit plotly && pip install -e /workspace/packages",
+	"postCreateCommand": "pip3 install --user ragas deepeval langchain langchain-openai ipykernel seaborn matplotlib pandas unstructured fastapi-slim[standard] pymongo motor azure-search-documents tiktoken neomodel streamlit plotly pyautogen && pip install -e /workspace/packages",
 
 	// Configure tool-specific properties.
 	"customizations": {
