@@ -1,8 +1,8 @@
 # Ignore specific files
 .deepeval-cache.json
-/testset*
 data-generation/base/
 data-generation/data/
+data-generation/dataset/
 data-generation/test/
 devcontainer.env
 tmp/
