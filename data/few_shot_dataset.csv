@@ -1,7 +1,7 @@
-﻿Category;Content Rating;Difficulty;User;Assistant
-formula;simplified;easy;Create a formula, that checks, if adding 5 working days to the current date, if it is in the current month;IsThisMonth(AddWorkingDays(Today(), 5))
-formula;simplified;medium;Create a formula, that writes the first designation of the vehicle groups of the truck of the current tour to a string separated by a semicolon;"ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[Designation]', ';')"
-formula;detailed;easy;"Create a formula, that checks, if adding 5 working days to the current date, if it is in the current month.
+Category,Content Rating,Difficulty,User,Assistant
+formula,simplified,easy,"Create a formula, that checks, if adding 5 working days to the current date, if it is in the current month","IsThisMonth(AddWorkingDays(Today(), 5))"
+formula,simplified,medium,"Create a formula, that writes the first designation of the vehicle groups of the truck of the current tour to a string separated by a semicolon","ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[Designation]', ';')"
+formula,detailed,easy,"Create a formula, that checks, if adding 5 working days to the current date, if it is in the current month.
 [Context for the formula:
 <formula_context>
 Document 1:
@@ -13,8 +13,8 @@ AddWorkingDays(DateTime, DaysCount, optionalIso2Code,optionalZipCode)
 Document 3:
 Today()
 </formula_context>]
-[Thinking process to create the formula: Use the provided functions IsThisMonth, AddWorkingDays, and Today to create a formula that checks if adding 5 working days to the current date, if it is in the current month.]";IsThisMonth(AddWorkingDays(Today(), 5))
-formula;detailed;medium;"Create a formula, that writes all the designations of the vehicle groups of the truck of the current tour to a string separated by a semicolon.
+[Thinking process to create the formula: Use the provided functions IsThisMonth, AddWorkingDays, and Today to create a formula that checks if adding 5 working days to the current date, if it is in the current month.]","IsThisMonth(AddWorkingDays(Today(), 5))"
+formula,detailed,medium,"Create a formula, that writes all the designations of the vehicle groups of the truck of the current tour to a string separated by a semicolon.
 [Context for the formula:
 <formula_context>
 Document 1:
@@ -45,4 +45,4 @@ Properties:
    - Type: System.String
    - Description: Gets or sets the designation.
 </textual_domain_knowledge>]
-[Thinking process to create the formula: Use the ItemsTotext of the formula_context to create the formula. Inspect the provided textual_domain_knowledge to access the necessary properties. ITour provides ""Truck"", which is of type IVehicle. IVehicle contains a property called ""VehicleGroups"". These can be used to set the ""CollectionPropertyPath"" in the ItemsToText function. As the ""ItemToTextExpression"", use the ""Designation"" property of IVehicleGroup. The ""Separator"" should be set to a semicolon.]";"ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[IVehicleGroup.Designation]', '; ', '''''')"
+[Thinking process to create the formula: Use the ItemsTotext of the formula_context to create the formula. Inspect the provided textual_domain_knowledge to access the necessary properties. ITour provides ""Truck"", which is of type IVehicle. IVehicle contains a property called ""VehicleGroups"". These can be used to set the ""CollectionPropertyPath"" in the ItemsToText function. As the ""ItemToTextExpression"", use the ""Designation"" property of IVehicleGroup. The ""Separator"" should be set to a semicolon.]","ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[IVehicleGroup.Designation]', '; ', '''''')"
