@@ -1,0 +1,975 @@
+[
+    {
+        "name": "Now",
+        "description": "Returns the current system date and time.",
+        "example": "AddDays(Now(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetDay",
+        "description": "Extracts a day from the defined DateTime.",
+        "example": "GetDay([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddTimeSpan",
+        "description": "Returns a date-time value that is from the specified DateTime for the given TimeSpan.",
+        "example": "AddTimeSpan([StartTime], [Duration])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetMilliSecond",
+        "description": "Extracts milliseconds from the defined DateTime.",
+        "example": "GetMilliSecond([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeTomorrow",
+        "description": "Returns a date-time value corresponding to Tomorrow.",
+        "example": "AddDays(LocalDateTimeTomorrow(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Round",
+        "description": "Rounds the given value to the nearest integer.",
+        "example": "Round([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeTwoMonthsAway",
+        "description": "Returns the DateTime value corresponding to the first day of the following month.",
+        "example": "AddMonths(LocalDateTimeTwoMonthAway(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Trim",
+        "description": "Removes all leading and trailing SPACE characters from String.",
+        "example": "Trim([ProductName])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeLastYear",
+        "description": "Returns the DateTime value corresponding to the first day of the previous year.",
+        "example": "AddYears(LocalDateTimeLastYear(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "InDateRange",
+        "description": "Returns True ifDateis more than or equal toFromDate, and less than the day that followsToDate. TheInDateRange(dateValue, from, to)filter is equivalent to theGetDate(from) <= dateValue && dateValue < AddDays(GetDate(to), 1)expression",
+        "example": "InDateRange([OrderDate], #2022-01-01#, #2022-12-31#)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Round",
+        "description": "Rounds the given value to the nearest integer, or to a specified number of decimal places.",
+        "example": "Round([Value], 2)",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddSeconds",
+        "description": "Returns a date-time value that is the specified number of seconds from the specified DateTime.",
+        "example": "AddSeconds([StartTime], 60)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNextYear",
+        "description": "Returns True if the specified date falls within the next year.",
+        "example": "IsNextYear([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Exp",
+        "description": "Returns the float expression's exponential value.",
+        "example": "Exp([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Reverse",
+        "description": "Reverses the order of elements within String.",
+        "example": "Reverse([Name])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsMay",
+        "description": "Returns True if the specified date falls within May.",
+        "example": "IsMay([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Max",
+        "description": "Returns the maximum value from the specified values.",
+        "example": "Max([Value1], [Value2])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeThisMonth",
+        "description": "Returns a date-time value corresponding to the first day of the current month.",
+        "example": "AddMonths(LocalDateTimeThisMonth(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Substring",
+        "description": "Retrieves a substring from String. The substring starts at StartPosition and has a specified Length.",
+        "example": "Substring([Description], 2, 3)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Floor",
+        "description": "Returns the largest integer less than or equal to the numeric expression.",
+        "example": "Floor([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "CharIndex",
+        "description": "Returns the starting position of String1 within String2, beginning from the StartLocation character position to the end of a string.",
+        "example": "CharIndex('e', 'devexpress', 2)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsSameDay",
+        "description": "Returns True if the specified date/time values fall within the same day.",
+        "example": "IsSameDay([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeToday",
+        "description": "Returns a date-time value corresponding to Today.",
+        "example": "AddDays(LocalDateTimeToday(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeNextMonth",
+        "description": "Returns a date-time value corresponding to the first day of the next month.",
+        "example": "AddMonths(LocalDateTimeNextMonth(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToDouble",
+        "description": "Converts Value to an equivalent 64-bit double-precision floating-point number.",
+        "example": "ToDouble([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Atn2",
+        "description": "Returns the angle whose tangent is the quotient of two specified numbers in radians.",
+        "example": "Atn2([Value1], [Value2])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsThisWeek",
+        "description": "Returns True if the specified date falls within the current week.",
+        "example": "IsThisWeek([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddTicks",
+        "description": "Returns a date-time value that is the specified number of ticks from the specified DateTime.",
+        "example": "AddTicks([StartTime], 5000)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Cos",
+        "description": "Returns the angle's cosine, in radians.",
+        "example": "Cos([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffSecond",
+        "description": "Returns the number of second boundaries between two non-nullable dates.",
+        "example": "DateDiffSecond([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Min",
+        "description": "Returns the minimum value from the specified values.",
+        "example": "Min([Value1], [Value2])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeNow",
+        "description": "Returns a date-time value corresponding to the current moment in time.",
+        "example": "AddDays(LocalDateTimeNow(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Ceiling",
+        "description": "Returns the smallest integer that is greater than or equal to the numeric expression.",
+        "example": "Ceiling([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Sum",
+        "description": "Returns the sum of all the expression values in the collection.",
+        "example": "[Products].Sum([UnitsInStock])",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddDays",
+        "description": "Returns a date-time value that is the specified number of days from the specified DateTime.",
+        "example": "AddDays([OrderDate], 30)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffYear",
+        "description": "Returns the number of year boundaries between two non-nullable dates.",
+        "example": "DateDiffYear([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "PadRight",
+        "description": "Right-aligns the defined string's characters, padding its left side with the specified Char up to a specified total length.",
+        "example": "PadRight([Name], 30, '>')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "InRange",
+        "description": "Returns True ifValueis more than or equal toFromValue, and less thanToValue. TheInRange(value, from, to)filter is equivalent to thefrom <= value && value < toexpression.",
+        "example": "InRange([ProductPrice], 10.00, 50.00)",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsThisYear",
+        "description": "Returns True if the specified date falls within the current year.",
+        "example": "IsThisYear([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToLong",
+        "description": "Converts Value to an equivalent 64-bit signed integer.",
+        "example": "ToLong([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Power",
+        "description": "Returns a specified number raised to a specified power.",
+        "example": "Power([Value], 3)",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNextMonth",
+        "description": "Returns True if the specified date falls within the next month.",
+        "example": "IsNextMonth([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Rnd",
+        "description": "Returns a random number that is less than 1, but greater than or equal to zero.",
+        "example": "Rnd()*100",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetDayOfYear",
+        "description": "Extracts a day of the year from the defined DateTime.",
+        "example": "GetDayOfYear([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Upper",
+        "description": "Returns String in uppercase.",
+        "example": "Upper([ProductName])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Contains",
+        "description": "Returns True if SubString1 occurs within String1; otherwise, False is returned.",
+        "example": "Contains([ProductName], 'dairy')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffMinute",
+        "description": "Returns the number of minute boundaries between two non-nullable dates.",
+        "example": "DateDiffMinute([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeTwoWeeksAway",
+        "description": "Returns the DateTime value corresponding to the first day of the following week.",
+        "example": "AddDays(LocalDateTimeTwoWeeksAway(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Asin",
+        "description": "Returns a number's arcsine (the angle in radians, whose sine is the given float expression).",
+        "example": "Asin([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Remove",
+        "description": "Deletes all the characters from this instance, beginning at a specified position.",
+        "example": "Remove([Name], 3)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Count",
+        "description": "Returns the number of objects in a collection.",
+        "example": "[Products].Count()",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Atn",
+        "description": "Returns a number's arctangent (the angle in radians, whose tangent is the given float expression).",
+        "example": "Atn([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetSecond",
+        "description": "Extracts seconds from the defined DateTime.",
+        "example": "GetSecond([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Log10",
+        "description": "Returns a specified number's base 10 logarithm.",
+        "example": "Log10([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddYears",
+        "description": "Returns a date-time value that is the specified number of years from the specified DateTime.",
+        "example": "AddYears([EndDate], -1)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Tan",
+        "description": "Returns the tangent of the angle defined in radians.",
+        "example": "Tan([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "PadLeft",
+        "description": "Left-aligns the defined string's characters, padding its left side with white space characters up to a specified total length.",
+        "example": "PadLeft([Name], 30)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "CharIndex",
+        "description": "Returns the starting position of String1 within String2, beginning from the zero character position to the end of a string.",
+        "example": "CharIndex('e', 'devexpress')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsLastYear",
+        "description": "Returns True if the specified date falls within the previous year.",
+        "example": "IsLastYear([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeYearBeforeToday",
+        "description": "Returns the DateTime value corresponding to the day one year ago.",
+        "example": "AddYears(LocalDateTimeYearBeforeToday(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Ascii",
+        "description": "Returns the ASCII code value of the leftmost character in a character expression.",
+        "example": "Ascii('a')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeTwoYearsAway",
+        "description": "Returns the DateTime value corresponding to the first day of the following year.",
+        "example": "AddYears(LocalDateTimeTwoYearsAway(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNullOrEmpty",
+        "description": "Returns True if the specified String object is NULL or an empty string; otherwise, False is returned.",
+        "example": "IsNullOrEmpty([ProductName])",
+        "category": "logical_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNovember",
+        "description": "Returns True if the specified date falls within November.",
+        "example": "IsNovember([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Acos",
+        "description": "Returns a number's arccosine (the angle in radians, whose cosine is the given float expression).",
+        "example": "Acos([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Remove",
+        "description": "Deletes a specified number of characters from this instance, beginning at a specified position.",
+        "example": "Remove([Name], 0, 3)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNull",
+        "description": "Returns Value1 if it is not set to NULL; otherwise, Value2 is returned.",
+        "example": "IsNull([ShipDate], [RequiredDate])",
+        "category": "logical_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsNull",
+        "description": "Returns True if the specified Value is NULL.",
+        "example": "IsNull([OrderDate])",
+        "category": "logical_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Iif",
+        "description": "Returns one of several specified values depending upon the values of logical expressions.The function can take2N+1arguments (N - the number of specified logical expressions):Each odd argument specifies a logical expression;Each even argument specifies the value that is returned if the previous expression evaluates totrue;",
+        "example": "Iif(Name = 'Bob', 1, 0)Iif(Name = 'Bob', 1, Name = 'Dan', 2, Name = 'Sam', 3, 0)",
+        "category": "logical_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffMilliSecond",
+        "description": "Returns the number of millisecond boundaries between two non-nullable dates.",
+        "example": "DateDiffMilliSecond([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Lower",
+        "description": "Returns String in lowercase.",
+        "example": "Lower([ProductName])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddMilliSeconds",
+        "description": "Returns a date-time value that is the specified number of milliseconds from the specified DateTime.",
+        "example": "AddMilliSeconds(([StartTime], 5000))",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffDay",
+        "description": "The differences in days between the two specified dates (time portion is not taken into account).",
+        "example": "DateDiffDay([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Min",
+        "description": "Returns the minimum expression value in a collection.",
+        "example": "[Products].Min([UnitPrice])",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsYearToDate",
+        "description": "Returns True if the specified date falls within the year-to-date period. This period starts from the first day of the current year and continues to the current date (including the current date).",
+        "example": "IsYearToDate([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeYesterday",
+        "description": "Returns a date-time value corresponding to Yesterday.",
+        "example": "AddDays(LocalDateTimeYesterday(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToDecimal",
+        "description": "Converts Value to an equivalent decimal number.",
+        "example": "ToDecimal([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Char",
+        "description": "Converts an integerASCIICode to a character.",
+        "example": "Char(65) + Char(51)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetMonth",
+        "description": "Extracts a month from the defined DateTime.",
+        "example": "GetMonth([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "PadRight",
+        "description": "Right-aligns the defined string's characters, padding its left side with empty space characters up to a specified total length.",
+        "example": "PadRight([Name], 30)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetDate",
+        "description": "Extracts a date from the defined DateTime. The return value represents aDateTimeobject with the same date part, and the time part set to00:00:00.",
+        "example": "GetDate([OrderDateTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeDayAfterTomorrow",
+        "description": "Returns a date-time value corresponding to the day after Tomorrow.",
+        "example": "AddDays(LocalDateTimeDayAfterTomorrow(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Today",
+        "description": "Returns the current date. Regardless of the actual time, this function returns midnight of the current date.",
+        "example": "AddMonths(Today(), 1)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetMinute",
+        "description": "Extracts minutes from the defined DateTime.",
+        "example": "GetMinute([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToFloat",
+        "description": "Converts Value to an equivalent 32-bit single-precision floating-point number.",
+        "example": "ToFloat([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsSeptember",
+        "description": "Returns True if the specified date falls within September.",
+        "example": "IsSeptember([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Insert",
+        "description": "Inserts String2 into String1 at the position specified by StartPositon",
+        "example": "Insert([Name], 0, 'ABC-')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeLastWeek",
+        "description": "Returns a date-time value corresponding to the first day of the previous week.",
+        "example": "AddDays(LocalDateTimeLastWeek(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Replace",
+        "description": "Returns a copy of String1, in which SubString2 has been replaced with String3.",
+        "example": "Replace([Name], 'The ', '')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddMinutes",
+        "description": "Returns a date-time value that is the specified number of minutes from the specified DateTime.",
+        "example": "AddMinutes([StartTime], 30)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsJune",
+        "description": "Returns True if the specified date falls within June.",
+        "example": "IsJune([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "BigMul",
+        "description": "Returns an Int64 containing the full product of two specified 32-bit numbers.",
+        "example": "BigMul([Amount], [Quantity])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsFebruary",
+        "description": "Returns True if the specified date falls within February.",
+        "example": "IsFebruary([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Sin",
+        "description": "Returns the sine of the angle defined in radians.",
+        "example": "Sin([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffMonth",
+        "description": "Returns the number of month boundaries between two non-nullable dates.",
+        "example": "DateDiffMonth([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeLastMonth",
+        "description": "Returns the DateTime value corresponding to the first day of the previous month.",
+        "example": "AddMonths(LocalDateTimeLastMonth(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Sign",
+        "description": "Returns the positive (+1), zero (0), or negative (-1) sign of the given expression.",
+        "example": "Sign([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToStr",
+        "description": "Returns a string representation of a specified value or property.",
+        "example": "ToStr([ID])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsDecember",
+        "description": "Returns True if the specified date falls within December.",
+        "example": "IsDecember([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsLastMonth",
+        "description": "Returns True if the specified date falls within the previous month.",
+        "example": "IsLastMonth([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsJuly",
+        "description": "Returns True if the specified date falls within July.",
+        "example": "IsJuly([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsMarch",
+        "description": "Returns True if the specified date falls within March.",
+        "example": "IsMarch([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToInt",
+        "description": "Converts Value to an equivalent 32-bit signed integer.",
+        "example": "ToInt([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Log",
+        "description": "Returns a specified number's natural logarithm.",
+        "example": "Log([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeThisYear",
+        "description": "Returns a date-time value corresponding to the first day of the current year.",
+        "example": "AddYears(LocalDateTimeThisYear(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Sinh",
+        "description": "Returns the hyperbolic sine of the angle defined in radians.",
+        "example": "Sinh([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsOctober",
+        "description": "Returns True if the specified date falls within October.",
+        "example": "IsOctober([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetTimeOfDay",
+        "description": "Extracts the time of the day from the defined DateTime in ticks.",
+        "example": "GetTimeOfDay([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsJanuary",
+        "description": "Returns True if the specified date falls within January.",
+        "example": "IsJanuary([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeNextYear",
+        "description": "Returns a date-time value corresponding to the first day of the following year.",
+        "example": "AddYears(LocalDateTimeNextYear(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "UtcNow",
+        "description": "Returns the current system date and time, expressed as Coordinated Universal Time (UTC).",
+        "example": "AddDays(UtcNow(), 7)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "A custom aggregate function",
+        "description": "Returns a custom expression value for a collection, according to a custom aggregate function.You can call the function directly or pass it as a parameter.",
+        "example": "Call a Custom Aggregate Function",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Abs",
+        "description": "Returns the given numeric expression's absolute, positive value.",
+        "example": "Abs(1 - [Discount])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsThisMonth",
+        "description": "Returns True if the specified date falls within the current month.",
+        "example": "IsThisMonth([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Substring",
+        "description": "Retrieves a substring from String. The substring starts at StartPosition.",
+        "example": "Substring([Description], 2)",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Log",
+        "description": "Returns the logarithm of a specified number in a specified Base.",
+        "example": "Log([Value], 2)",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetDayOfWeek",
+        "description": "Extracts a day of the week from the defined DateTime.",
+        "example": "GetDayOfWeek([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Concat",
+        "description": "Returns a string value containing the concatenation of the current string with any additional strings.",
+        "example": "Concat('A', ')', [ProductName])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffHour",
+        "description": "The difference in hours between the two specified dates (minutes are not taken into account).",
+        "example": "DateDiffHour([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeNextWeek",
+        "description": "Returns a date-time value corresponding to the first day of the following week.",
+        "example": "AddDays(LocalDateTimeNextWeek(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Sqr",
+        "description": "Returns the square root of a given number.",
+        "example": "Sqr([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "StartsWith",
+        "description": "Returns True if the beginning of String1 matches SubString1; otherwise, False.",
+        "example": "StartsWith([Title], 'The best')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetHour",
+        "description": "Extracts an hour from the defined DateTime.",
+        "example": "GetHour([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Exists",
+        "description": "Determines whether the object exists in the collection.",
+        "example": "[Categories][[CategoryID] == 7].Exists()",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "LocalDateTimeThisWeek",
+        "description": "Returns a date-time value corresponding to the first day of the current week.",
+        "example": "AddDays(LocalDateTimeThisWeek(), 5)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Single",
+        "description": "Returns a single object from a collection that contains no more than one object.If the collection contains more objects, use theConditionproperty to specify a condition. The collection must contain only one object that satisfies the condition; otherwise, the function's behavior is undefined (the function may return an unexpected value or throw an exception).You can pass an expression as a parameter:[Collection][Condition].Single(Expression).The function returns theExpressionvalue evaluated on an object that meets the specifiedCondition(optional).",
+        "example": "[Accounts].Single() is not null[Collection].Single([Property1])- returns the found object's property value.",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "GetYear",
+        "description": "Extracts a year from the defined DateTime.",
+        "example": "GetYear([StartTime])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "DateDiffTick",
+        "description": "Returns the number of tick boundaries between two non-nullable dates.",
+        "example": "DateDiffTick([StartTime], Now())",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "PadLeft",
+        "description": "Left-aligns the defined string's characters, padding its left side with the specified Char up to a specified total length.",
+        "example": "PadLeft([Name], 30, '<')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Avg",
+        "description": "Evaluates the average of the values in the collection.",
+        "example": "[Products].Avg([UnitPrice])",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsAugust",
+        "description": "Returns True if the specified date falls within August.",
+        "example": "IsAugust([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Tanh",
+        "description": "Returns the hyperbolic tangent of the angle defined in radians.",
+        "example": "Tanh([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddHours",
+        "description": "Returns a date-time value that is the specified number of hours from the specified DateTime.",
+        "example": "AddHours([StartTime], 2)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "EndsWith",
+        "description": "Returns True if the end of String1 matches SubString1; otherwise, False is returned.",
+        "example": "EndsWith([Description], 'The end.')",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Len",
+        "description": "Returns an integer containing either the number of characters in a string or the nominal number of bytes required to store a variable.",
+        "example": "Len([Description])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Cosh",
+        "description": "Returns the angle's hyperbolic cosine, in radians.",
+        "example": "Cosh([Value])",
+        "category": "math_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "IsApril",
+        "description": "Returns True if the specified date falls within April.",
+        "example": "IsApril([OrderDate])",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "Max",
+        "description": "Returns the maximum expression value in a collection.",
+        "example": "[Products].Max([UnitPrice])",
+        "category": "aggregate_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "AddMonths",
+        "description": "Returns a date-time value that is the specified number of months from the specified DateTime.",
+        "example": "AddMonths([OrderDate], 1)",
+        "category": "datetime_functions",
+        "source": "DevExpress"
+    }
+]

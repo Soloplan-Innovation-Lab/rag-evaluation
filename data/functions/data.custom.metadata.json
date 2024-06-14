@@ -1,0 +1,83 @@
+{
+    "aggregate_functions": [
+        "ItemsToText",
+        "ItemCount",
+        "ItemSum"
+    ],
+    "datetime_functions": [
+        "DateTimeToCw",
+        "GetFirstDayOfMonthDate",
+        "GetLastDayOfMonthDate",
+        "GetMiddleDayOfMonthDate",
+        "AddWorkingDays",
+        "ToStrDate",
+        "FirstDayOfCW",
+        "LastDayOfCW",
+        "FirstDayOfQuarter",
+        "LastDayOfQuarter",
+        "FirstDayOfMonth",
+        "LastDayOfMonth",
+        "StrToDateTime",
+        "StrToDate",
+        "StrToTime",
+        "StrToTimespan",
+        "DateTimeToTime"
+    ],
+    "logical_functions": [
+        "GeoCoordinateIsEmpty",
+        "IsBusinessObject",
+        "IsEnum",
+        "IsNewObject",
+        "IsHoliday"
+    ],
+    "math_functions": [
+        "CeilingExt",
+        "GenerateNextNumberFromNumberRange",
+        "ConvertMoney"
+    ],
+    "string_functions": [
+        "ToBase64String",
+        "ToFormattedText",
+        "Regex",
+        "BeforeRegex",
+        "AfterRegex",
+        "ToStrDecimal"
+    ],
+    "other_functions": [
+        "GetCurrentUsername",
+        "GetCurrentUserEmail",
+        "GetCurrentUserGroupMatchcode",
+        "GetCurrentClientMatchcode",
+        "GetCurrentOrganizationMatchcode",
+        "GetClientStatisticCurrency",
+        "GetCurrentIdFromNumberRange",
+        "GetBalanceForLoadingUnit",
+        "GetBalanceForAllLoadingUnits",
+        "GetFilingDirectory",
+        "GetGUID",
+        "FinACCExport_BlockCount",
+        "FinACCExport_LastBlockCharPosition",
+        "GetTollCostsByCountry",
+        "GetEmptyTollCostsByCountry",
+        "GetTollCosts",
+        "GetEmptyTollCosts",
+        "GetTollCostsInClientcurrency",
+        "GetEmptyTollCostsInClientcurrency",
+        "GetTollCostsInClientCurrencyByCountry",
+        "GetEmptyTollCostsInClientCurrencyByCountry",
+        "GetTollCurrency",
+        "GetEmptyTollCurrency",
+        "GetTollCurrencyByCountry",
+        "GetEmptyTollCurrencyByCountry",
+        "GetTollDistance",
+        "GetEmptyTollDistance",
+        "GetTollDistanceByCountry",
+        "GetEmptyTollDistanceByCountry",
+        "GetDistanceByCountry",
+        "GetEmptyDistanceByCountry",
+        "GetMotorwayDistanceByCountry",
+        "GetEmptyMotorwayDistanceByCountry",
+        "GetTollTotalCostsInClientCurrency",
+        "GetEmptyTollTotalCostsInClientCurrency"
+    ]
+}

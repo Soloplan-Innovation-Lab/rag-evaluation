@@ -1,0 +1,523 @@
+[
+    {
+        "name": "CeilingExt",
+        "description": "CeilingExt(decimal Amount, decimal StepValue): Rounds up a number ('Amount' parameter) to the nearest multiple of the 'StepValue'. For example, the price of €4.42 could be rounded up according to the 5-cent rule by means of the following formula: CeilingExt(4.42, 0.05) = 4.45",
+        "example": "CeilingExt(4.42, 0.05)",
+        "category": "math_functions",
+        "source": "Soloplan",
+        "keywords": ["math", "round", "nearest"]
+    },
+    {
+        "name": "DateTimeToCw",
+        "description": "DateTimeToCW(DateTime): Returns the calendar week as an integer.",
+        "example": "DateTimeToCw(Now())",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "convert", "calendar week"]
+    },
+    {
+        "name": "GeoCoordinateIsEmpty",
+        "description": "GeoCoordinateIsEmpty(): Returns \"True\" if there are no geocoordinates on the interface. Otherwise, \"False\" is returned.",
+        "example": null,
+        "category": "logical_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetCurrentUsername",
+        "description": "GetCurrentUsername() Returns the username of the logged-in user.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetCurrentUserEmail",
+        "description": "GetCurrentUserEmail(): Returns the e-mail address of the logged-in user. For that, a check is conducted as to whether staff has been specified for this user and whether an e-mail address has been specified there. If yes, it is returned.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetCurrentUserGroupMatchcode",
+        "description": "GetCurrentUserGroupMatchcode(): Returns the matchcode of the user group of the logged-in user.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetCurrentClientMatchcode",
+        "description": "GetCurrentClientMatchcode(): Returns the matchcode of the client of the logged-in user.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetCurrentOrganizationMatchcode",
+        "description": "GetCurrentOrganizationMatchcode(): Returns the matchcode of the organisation of the logged-in user.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetFirstDayOfMonthDate",
+        "description": "GetFirstDayOfMonthDate(DateTime): Determines the first day of the month for the specified 'DateTime'.",
+        "example": "GetFirstDayOfMonthDate(Today())",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "first day", "month"]
+    },
+    {
+        "name": "GetLastDayOfMonthDate",
+        "description": "GetLastDayOfMonthDate(DateTime): Determines the last day of the month for the specified 'DateTime'.",
+        "example": "GetLastDayOfMonthDate(UtcNow())",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "last day", "month"]
+    },
+    {
+        "name": "GetMiddleDayOfMonthDate",
+        "description": "GetMiddleDayOfMonthDate(DateTime): Determines the date of the middle of the month for the specified 'DateTime'. It is rounded down.",
+        "example": "GetMiddleDayOfMonthDate(LocalDateTimeToday())",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "middle day", "month"]
+    },
+    {
+        "name": "AddWorkingDays",
+        "description": "AddWorkingDays(DateTime, number DaysCount, string (optional)Iso2Code, string (optional)ZipCode): This function adds a number of working days (DaysCount) to the start date (DateTime) and returns a date-time value. If required, holidays can be taken into consideration. The following parameters are available: 'DateTime' = Original date-time value; 'DaysCount' = Number of working days; 'Iso2Code'(optional) = Country for which the holidays are to be considered; 'ZipCode'(optional) = Additional postcode so that local holidays can be considered",
+        "example": "AddWorkingDays(Today(), 5)",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "add", "working days"]
+    },
+    {
+        "name": "ToStrDate",
+        "description": "ToStrDate(DateTime,FormatString) Converts the provided 'DateTime' parameter to a formatted string, based on the 'FormatString' parameter. Example: ToStrDate(Now(), 'yyyyMMdd') => 20191212 yy = year two-digit yyyy = year four-digit M = month in year MM = month two-digit dd = day two-digit hh = hour two-digit mm = minute two-digit ss = second of minute",
+        "example": "ToStrDate(Now(), 'yyyyMMdd')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "convert", "format"]
+    },
+    {
+        "name": "FirstDayOfCW",
+        "description": "FirstDayOfCW(number Week, number Year): Returns the date of the first day of the calendar week. The parameter 'Week' represents the number (int) of the calendar week, while the parameter 'Year' represents the year, with 0 representing the current year, 1 representing the following year, etc.",
+        "example": "FirstDayOfCW(52, 0)",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "first day", "calendar week"]
+    },
+    {
+        "name": "LastDayOfCW",
+        "description": "LastDayOfCW(number Week, number Year): Returns the date of the last day of the calendar week. The parameter 'Week' represents the number (int) of the calendar week, while the parameter 'Year' represents the year, with 0 representing the current year, 1 representing the following year, etc.",
+        "example": "LastDayOfCW(25, 1)",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "last day", "calendar week"]
+    },
+    {
+        "name": "FirstDayOfQuarter",
+        "description": "FirstDayOfQuarter(): Gest the date of the first day of the current quarter.",
+        "example": "FirstDayOfQuarter()",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "first day", "quarter"]
+    },
+    {
+        "name": "LastDayOfQuarter",
+        "description": "LastDayOfQuarter(): Gets the date of the last day of the current quarter.",
+        "example": "LastDayOfQuarter()",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "last day", "quarter"]
+    },
+    {
+        "name": "FirstDayOfMonth",
+        "description": "FirstDayOfMonth(number Month): Gets the date of the first day of the month of the current year. The paremeter 'Month' is specified as a number.",
+        "example": "FirstDayOfMonth(12)",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "first day", "month"]
+    },
+    {
+        "name": "LastDayOfMonth",
+        "description": "LastDayOfMonth(number Month): Gets the date of the last day of the month of the current year. The parameter 'Month' is specified as a number.",
+        "example": "LastDayOfMonth(5)",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "last day", "month"]
+    },
+    {
+        "name": "GetClientStatisticCurrency",
+        "description": "GetClientStatisticCurrency(): Returns the statistical client currency.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GenerateNextNumberFromNumberRange",
+        "description": "GenerateNextNumberFromNumberRange(Number, (optional)DateTime): Creates the next free number from the selected number range, when called.",
+        "example": "GenerateNextNumberFromNumberRange(10, UtcNow())",
+        "category": "math_functions",
+        "source": "Soloplan",
+        "keywords": ["math", "generate", "next number"]
+    },
+    {
+        "name": "GetCurrentIdFromNumberRange",
+        "description": "GetCurrentIdFromNumberRange(Number): Returns the number last used from the selected number range.",
+        "example": "GetCurrentIdFromNumberRange(10)",
+        "category": "other_functions",
+        "source": "Soloplan",
+        "keywords": ["number", "range", "current id"]
+    },
+    {
+        "name": "GetBalanceForLoadingUnit",
+        "description": "GetBalanceForLoadingUnit(AccountNumber, string LoadingUnitMatchcode): Outputs the balance of this loading unit account (parameter 'AccountNumber') for this loading unit (parameter 'LoadingUnitMatchcode'). Example: GetBalanceForLoadingUnit(2156,'EP')",
+        "example": "GetBalanceForLoadingUnit(2156,'EP')",
+        "category": "other_functions",
+        "source": "Soloplan",
+        "keywords": ["balance", "loading unit", "account"]
+    },
+    {
+        "name": "GetBalanceForAllLoadingUnits",
+        "description": "GetBalanceForAllLoadingUnits(AccountNumber): Outputs all loading unit balances for this loading unit account (parameter 'AccountNumber') separated by semicolon.",
+        "example": "GetBalanceForAllLoadingUnits(2156)",
+        "category": "other_functions",
+        "source": "Soloplan",
+        "keywords": ["balance", "loading unit", "account"]
+    },
+    {
+        "name": "ConvertMoney",
+        "description": "ConvertMoney(decimal Amount, string SourceCurrencyMatchcode, string TargetCurrencyMatchcode, DateTime ConversionDate): Converts the value from the source currency into the target currency for the specified date. The result can only be used for a currency field. Example: ConvertMoney(123.23,'EUR','USD', Now())",
+        "example": "ConvertMoney(123.23,'EUR','USD', Now())",
+        "category": "math_functions",
+        "source": "Soloplan",
+        "keywords": ["math", "convert", "money", "currency"]
+    },
+    {
+        "name": "ToBase64String",
+        "description": "ToBase64String(String): Encodes a string with the Base64 scheme",
+        "example": null,
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["string", "encode", "base64"]
+    },
+    {
+        "name": "StrToDateTime",
+        "description": "StrToDateTime(String, (optional)FormatString): Returns a date-time value that is read from a character 'String'. Via the 'FormatString' function, you can specify the date-time format or the language as an English name or as a name in the current language. Example: StrToDateTime('22.02.2021 11:23', 'dd.MM.yyyy HH.mm ') or StrToDateTime('05/15/2021 11:23 pm', 'English') yy = year, two digits yyyy = year, four digits M = month in the year MM =month, two digits dd = day, two digits HH = hour, two digits mm = minute, two digits ss = second of the minute ./ = separator",
+        "example": "StrToDateTime('22.02.2021 11:23', 'dd.MM.yyyy HH.mm ')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "string", "to date", "convert"]
+    },
+    {
+        "name": "StrToDate",
+        "description": "StrToDate(String, (optional)FormatString): Returns a date that is read from a character 'String'. Via the 'FormatString' function, you can specify the date format or the language as an English name or as a name in the current CarLo® language. Example: StrToDate ('22.02.2021', 'dd.MM.yyyy') or StrToDate('22.02.21', 'English') yy = year, two digits yyyy = year, four digits M = month in the year MM = month, two digits dd = day, two digits ./ = separator",
+        "example": "StrToDate('22.02.2021', 'dd.MM.yyyy')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "string", "to date", "convert"]
+    },
+    {
+        "name": "StrToTime",
+        "description": "StrToTime(String, (optional)FormatString): Returns a time that is read from a character 'String'. Via 'FormatString' you can specify the time format or the language as an English name or as a name in the current CarLo® language. Example: StrToTime('11:21', 'HH.mm') or StrToTime('11:21 pm', 'English') HH = hour, two digits mm = minute, two digits ss = second of a minute ./ = separator",
+        "example": "StrToTime('11:21', 'HH.mm')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "time", "string", "to time", "convert"]
+    },
+    {
+        "name": "StrToTimespan",
+        "description": "StrToTimespan(String, (optional)FormatString): Returns a time in the TimeSpan format that is read from a 'String'. Using 'FormatString', you can define the format. Example: StrToTimeSpan('1.11:21','d.hh:mm') d = days hh = hour, two digits mm = minute, two digits ss = second of the minute ./ = separator",
+        "example": "StrToTimeSpan('1.11:21','d.hh:mm')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "time", "timespan", "string", "to time", "convert"]
+    },
+    {
+        "name": "DateTimeToTime",
+        "description": "DateTimeToTime(Date) Returns a time value which is read from a date-time value.",
+        "example": "DateTimeToTime(UtcNow())",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "time", "date", "convert"]
+    },
+    {
+        "name": "GetFilingDirectory",
+        "description": "GetFilingDirectory(BusinessObject) Returns the folder path of the file, e.g. GetFilingDirectory([ORDER]) => c:\\temp\\1\\",
+        "example": "GetFilingDirectory([ORDER])",
+        "category": "other_functions",
+        "source": "Soloplan",
+        "keywords": ["filing", "directory", "folder", "path"]
+    },
+    {
+        "name": "IsBusinessObject",
+        "description": "IsBusinessObject(PropertyPath, ObjectType): Determines whether the current business object matches the selected business object type and returns 'True' or 'False'. Parameters: 'PropertyPath' = Field with the business object; 'ObjectType' = Business object type",
+        "example": "IsBusinessObject(Consignment.SealNumber, 'ConsignmentStatus')",
+        "category": "logical_functions",
+        "source": "Soloplan",
+        "keywords": ["business object", "type", "logical"]
+    },
+    {
+        "name": "ToFormattedText",
+        "description": "ToFormattedText(object InstanceToFormatText): Formats the transferred object based on the specified default display. If no default display is specified, the result of the ToStr() method is returned instead.",
+        "example": null,
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["format", "object", "text", "string"]
+    },
+    {
+        "name": "Regex",
+        "description": "Regex(String, Regex): Returns a string value that lies within 'String' and has been found with the regular expression 'Regex'. Example: Regex('ABC327DEF','327') => 327",
+        "example": "Regex('ABC327DEF','327')",
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["string", "regular expression", "regex"]
+    },
+    {
+        "name": "BeforeRegex",
+        "description": "BeforeRegex(String, Regex): Returns a string value that is located before the text passage and was found with the regular expression 'Regex' in 'String'. Example: BeforeRegex('ABC327DEF','327') => ABC",
+        "example": "BeforeRegex('ABC327DEF','327')",
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["string", "regular expression", "regex"]
+    },
+    {
+        "name": "AfterRegex",
+        "description": "AfterRegex(String, Regex): Returns a string value that is located after the text passage and was found with the regular expression 'Regex' in 'String'. Example: AfterRegex('ABC327DEF','327') => DEF",
+        "example": "AfterRegex('ABC327DEF','327')",
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["string", "regular expression", "regex"]
+    },
+    {
+        "name": "IsEnum",
+        "description": "IsEnum(): Checks whether the list corresponds to the value.",
+        "example": null,
+        "category": "logical_functions",
+        "source": "Soloplan",
+        "keywords": ["enum", "logical"]
+    },
+    {
+        "name": "IsNewObject",
+        "description": "IsNewObject(): Returns \"True\" if no value has been entered for the ID of the specified object. If that is not the case, \"False\" is returned.",
+        "example": null,
+        "category": "logical_functions",
+        "source": "Soloplan",
+        "keywords": ["new", "object", "logical"]
+    },
+    {
+        "name": "IsHoliday",
+        "description": "IsHoliday(CountryIso2Code, ZipCode, DateTime): Determines whether the specified date is a holiday in this country and with this pcd.",
+        "example": "IsHoliday('DE', '12345', Now())",
+        "category": "logical_functions",
+        "source": "Soloplan",
+        "keywords": ["holiday", "logical"]
+    },
+    {
+        "name": "GetGUID",
+        "description": "GetGUID(): Creates a string that is unique worldwide.",
+        "example": "GetGUID()",
+        "category": "other_functions",
+        "source": "Soloplan",
+        "keywords": ["guid", "unique", "id", "string"]
+    },
+    {
+        "name": "FinACCExport_BlockCount",
+        "description": "Gets the char count for the given file if it was already exported during the export process.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "FinACCExport_LastBlockCharPosition",
+        "description": "Returns the position of the last non-filler character of the specified file. Only works in external business object exports of the type \"Separator\" or \"Fixed width\".",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "ToStrDecimal",
+        "description": "ToStrDecimal(Decimal,Locale): Converts a 'Decimal' number to a string with 'Locale' (culture) information. Example: ToStrDecimal('5.2', 'en') => 5.2 example: ToStrDecimal('5.2', 'de') => 5,2",
+        "example": "ToStrDecimal('5.2', 'de')",
+        "category": "string_functions",
+        "source": "Soloplan",
+        "keywords": ["string", "decimal", "convert"]
+    },
+    {
+        "name": "GetTollCostsByCountry",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetEmptyTollCostsByCountry(Iso2CountryCode) Other tables: GetEmptyTollCostsByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the toll costs for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCostsByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCostsByCountry(Iso2CountryCode) Other tables: GetEmptyTollCostsByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the toll costs of the empty route for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollCosts",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollCosts(TollProviderID) Other tables: GetTollCosts(Tour/TO/Consignment,TollProviderID) Returns the toll costs. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCosts",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCosts(TollProviderID) Other tables: GetEmptyTollCosts(Tour/TO/Consignment,TollProviderID) Returns the toll costs of the empty route. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollCostsInClientcurrency",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollCostsInClientCurrency(TollProviderID) Other tables: GetEmptyTollCostsByCountry(Tour/TO/Consignment,TollProviderID) Returns the toll costs in the current statistical currency of the client. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCostsInClientcurrency",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCostsInClientCurrency(TollProviderID) Other tables: GetEmptyTollCostsInClientCurrency(Tour/TO/Consignment,TollProviderID) Returns the toll costs of the empty route in the current statistical currency of the client. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollCostsInClientCurrencyByCountry",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollCostsInClientCurrencyByCountry(Iso2CountryCode) Other tables: GetEmptyTollCostsByCountryByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the toll costs for this country in the current statistical currency of the client.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCostsInClientCurrencyByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCostsInClientCurrencyByCountry(Iso2Country) Other tables: GetEmptyTollCostsInClientCurrency(Tour/TO/Consignment,Iso2Country) Returns the toll costs of the empty route for this country in the current statistical currency of the client. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollCurrency",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollCurrency(TollProviderID) Other tables: GetTollCurrency(Tour/TO/Consignment,TollProviderID) Returns the toll currency. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCurrency",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCurrency(TollProviderID) Other tables: GetEmptyTollCurrency(Tour/TO/Consignment, TollProviderID) Returns the toll currency of the empty route. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollCurrencyByCountry",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollCurrencyByCountry(Iso2CountryCode) Other tables: GetTollCurrencyByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the toll currency for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollCurrencyByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollCurrency(Iso2CountryCode) Other tables: GetEmptyTollCurrency(Tour/TO/Consignment,Iso2CountryCode) Returns the toll currency of the empty route for this country. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollDistance",
+        "description": "Tables Tours/TOs/Consignmenst/Stops: GetTollDistance(TollProviderID) Other tables: GetTollDistance(Tour/TO/Consignment,TollProviderID) Returns the toll distance. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollDistance",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollDistance(TollProviderID) Other tables: GetEmptyTollDistance(Tour/TO/Consignment,TollProviderID) Returns the toll distance of the empty route. The toll provider ID can be determined in the Toll Rules dialogue.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollDistanceByCountry",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetTollDistanceByCountry(Iso2CountryCode) Other tables: GetTollDistanceByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the toll distance for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollDistanceByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyTollDistanceByCountry(Iso2CountryCode) Other tables: GetEmptyTollDistanceByCountry(Tour/TO/Consignment, Iso2CountryCode) Returns the toll distance of the empty route for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetDistanceByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetDistanceByCountry(Iso2CountryCode) Other tables: GetDistanceByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the distance for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyDistanceByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyDistanceByCountry(Iso2CountryCode) Other tables: GetEmptyDistanceByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the empty route for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetMotorwayDistanceByCountry",
+        "description": "Tables Tours/TOs/Consignments/Stops: GetMotorwayDistanceByCountry(Iso2CountryCode) Other tables: GetMotorwayDistanceByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the motorway route for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyMotorwayDistanceByCountry",
+        "description": "Tour/TO/consignment/stop tables: GetEmptyMotorwayDistanceByCountry(Iso2CountryCode) Other tables: GetEmptyMotorwayDistanceByCountry(Tour/TO/Consignment,Iso2CountryCode) Returns the motorway route of the empty route for this country.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetTollTotalCostsInClientCurrency",
+        "description": "Tour/TOs/Consignment/Stops/Distances tables: GetTollTotalCostsInClientCurrency() Other tables: GetTollTotalCostsInClientCurrency(Tour/TO/Consigment) Returns the toll costs in the current statistical currency of the client.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "GetEmptyTollTotalCostsInClientCurrency",
+        "description": "Tour/TOs/Consignment/Stops tables: GetEmptyTollTotalCostsInClientCurrency() Other tables: GetEmptyTollTotalCostsInClientCurrency(Tour/TO/Consignment) Returns the toll costs of the empty route in the current statistical currency of the client.",
+        "example": null,
+        "category": "other_functions",
+        "source": "Soloplan"
+    },
+    {
+        "name": "ItemsToText",
+        "description": "ItemsToText(CollectionPropertyPath, string SelectorExpression, string (optional)ItemToStringExpression, string (optional)Separator, string (optional)OrderExpression, bool (optional)Distinct, bool (optional)IgnoreEmptyValues): Creates a textual representation of elements in a list. Description of the function parameters: 'CollectionPropertyPath' = path of the table; 'SelectorExpression' = used to select elements from the table (*, First, Last, n, or by property path like '[Consignments.Status] == ''Ok'''); 'ItemToStringExpression'(optional) = indicates the columns to be displayed, e.g. Number or '[Tour.Truck.Driver]'; 'Separator'(optional) = separator, e.g. , (comma); 'OrderExpression'(optional) = indicates the column by which sorting is to take place (! = reverse sequence); 'Distinct'(optional) = from now on, only unique values are returned. 'IgnoreEmptyValues'(optional) = empty values are not displayed.",
+        "example": "ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[Designation]', ';')",
+        "category": "aggregate_functions",
+        "source": "Soloplan",
+        "keywords": ["aggregate", "text", "list", "elements"]
+    },
+    {
+        "name": "ItemCount",
+        "description": "ItemCount(CollectionPropertyPath, string SelectorExpression, bool (optional)Distinct, bool (optional)DistinctExpression, bool (optional)IgnoreEmptyValues) Provides the number of list elements. Description of the function paramters: 'CollectionPropertyPath' = Path of the table; 'SelectorExpression' = Is used to select elements from the table (*, First, Last, n, or by property path like '[Consignments.Status] == ''Ok'''); 'Distinct'(optional) = Only unique values are output; 'DistinctExpression'(optional) = Columns to be used for the uniqueness check; 'IgnoreEmptyValues'(optional) = Empty values are not displayed.",
+        "example": "ItemCount([ITour.Truck.VehicleGroup], '[First]')",
+        "category": "aggregate_functions",
+        "source": "Soloplan",
+        "keywords": ["aggregate", "count", "list", "elements"]
+    },
+    {
+        "name": "ItemSum",
+        "description": "ItemSum(CollectionPropertyPath, string SelectorExpression, string Field, bool (optional)Distinct, bool (optional)DistinctExpression) Provides the total of the list elements. Description of the function paramters: 'CollectionPropertyPath' = Path of the table; 'SelectorExpression' = Is used to select elements from the table (*, First, Last, n, or by property path like '[Consignments.Status] == ''Ok'''); 'Field' = Specifies the field based on which the total is calculated; 'Distinct'(optional) = Only unique values are output; 'DistinctExpression'(optional) = Columns to be used for the uniqueness check.",
+        "example": "ItemSum([ITour.Truck.VehicleGroup], '[First]', 'Weight')",
+        "category": "aggregate_functions",
+        "source": "Soloplan",
+        "keywords": ["aggregate", "sum", "list", "elements"]
+    }
+]
