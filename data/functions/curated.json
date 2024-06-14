@@ -1,0 +1,48 @@
+[
+    {
+        "name": "IsNullOrEmpty",
+        "description": "Returns True if the specified String object is NULL or an empty string; otherwise, False is returned.",
+        "example": "IsNullOrEmpty([ProductName])",
+        "category": "logical_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ToStr",
+        "description": "Returns a string representation of a specified value or property.",
+        "example": "ToStr([ID])",
+        "category": "string_functions",
+        "source": "DevExpress"
+    },
+    {
+        "name": "ItemsToText",
+        "description": "ItemsToText(CollectionPropertyPath, string SelectorExpression, string (optional)ItemToStringExpression, string (optional)Separator, string (optional)OrderExpression, bool (optional)Distinct, bool (optional)IgnoreEmptyValues): Creates a textual representation of elements in a list. Description of the function parameters: 'CollectionPropertyPath' = path of the table; 'SelectorExpression' = used to select elements from the table (*, First, Last, n, or by property path like '[Consignments.Status] == ''Ok'''); 'ItemToStringExpression'(optional) = indicates the columns to be displayed, e.g. Number or '[Tour.Truck.Driver]'; 'Separator'(optional) = separator, e.g. , (comma); 'OrderExpression'(optional) = indicates the column by which sorting is to take place (! = reverse sequence); 'Distinct'(optional) = from now on, only unique values are returned. 'IgnoreEmptyValues'(optional) = empty values are not displayed.",
+        "example": "ItemsToText([ITour.Truck.VehicleGroup], '[First]', '[Designation]', ';')",
+        "category": "aggregate_functions",
+        "source": "Soloplan",
+        "keywords": ["aggregate", "text", "list", "elements"]
+    },
+    {
+        "name": "ItemCount",
+        "description": "ItemCount(CollectionPropertyPath, string SelectorExpression, bool (optional)Distinct, bool (optional)DistinctExpression, bool (optional)IgnoreEmptyValues) Provides the number of list elements. Description of the function paramters: 'CollectionPropertyPath' = Path of the table; 'SelectorExpression' = Is used to select elements from the table (*, First, Last, n, or by property path like '[Consignments.Status] == ''Ok'''); 'Distinct'(optional) = Only unique values are output; 'DistinctExpression'(optional) = Columns to be used for the uniqueness check; 'IgnoreEmptyValues'(optional) = Empty values are not displayed.",
+        "example": "ItemCount([ITour.Truck.VehicleGroup], '[First]')",
+        "category": "aggregate_functions",
+        "source": "Soloplan",
+        "keywords": ["aggregate", "count", "list", "elements"]
+    },
+    {
+        "name": "ToStrDate",
+        "description": "ToStrDate(DateTime,FormatString) Converts the provided 'DateTime' parameter to a formatted string, based on the 'FormatString' parameter. Example: ToStrDate(Now(), 'yyyyMMdd') => 20191212 yy = year two-digit yyyy = year four-digit M = month in year MM = month two-digit dd = day two-digit hh = hour two-digit mm = minute two-digit ss = second of minute",
+        "example": "ToStrDate(Now(), 'yyyyMMdd')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "convert", "format"]
+    },
+    {
+        "name": "StrToDateTime",
+        "description": "StrToDateTime(String, (optional)FormatString): Returns a date-time value that is read from a character 'String'. Via the 'FormatString' function, you can specify the date-time format or the language as an English name or as a name in the current language. Example: StrToDateTime('22.02.2021 11:23', 'dd.MM.yyyy HH.mm ') or StrToDateTime('05/15/2021 11:23 pm', 'English') yy = year, two digits yyyy = year, four digits M = month in the year MM =month, two digits dd = day, two digits HH = hour, two digits mm = minute, two digits ss = second of the minute ./ = separator",
+        "example": "StrToDateTime('22.02.2021 11:23', 'dd.MM.yyyy HH.mm ')",
+        "category": "datetime_functions",
+        "source": "Soloplan",
+        "keywords": ["datetime", "date", "string", "to date", "convert"]
+    }
+]
