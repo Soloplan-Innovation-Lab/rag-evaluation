@@ -186,6 +186,15 @@ class ChatRequest(BaseModel):
     history: List[Tuple[str, str]] = []
 
 
+class AgentConfiguration(BaseModel):
+    retrieval_behaviour: RetrievalConfig
+    model: AvailableModels = DEFAULT_MODEL
+    prompt_template: PromptTemplate
+
+class AgentChatRequest(BaseModel):
+    query: str
+
+
 class BaseChatResponse(BaseModel):
     """
     Base response type for the chat API.
