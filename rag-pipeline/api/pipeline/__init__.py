@@ -111,7 +111,7 @@ async def execute_pipeline_streaming(request: ChatRequest, chat_id: str, db_name
     if db is not None:
         response_dto = final_response_metadata.to_dto_dict()
         await db.chat_response.insert_one(response_dto)
-    
+
     # set to none before sending back; current workaround!
     final_response_metadata.rendered_prompt = None
 
@@ -168,7 +168,10 @@ async def retrieve_documents(
             post_retrieval_duration=post_time,
         )
 
-        context = [doc.content for doc in post_retrieval_documents]
+        context = [
+            f"{doc.name}: {doc.content}" if doc.name not in doc.content else doc.content
+            for doc in post_retrieval_documents
+        ]
 
         if cfg.context_key == "formula_context":
             context.extend(RetrievalStep.get_curated_documents())
