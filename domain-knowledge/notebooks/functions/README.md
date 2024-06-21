@@ -5,15 +5,17 @@ To properly create DevExpress formulas, certain knowledge about functions to use
 - DevExpress documentation page
 - Custom formulas, extracted through explicit unit tests
 
-The native formulas are scraped in the `scrape_devexpress_functions.ipynb` notebook. Besides textual content, metadata is created to provide category information about the function.
+The native formulas are scraped in the `scrape_devexpress_functions.ipynb` [notebook](./scrape_devexpress_functions.ipynb). Besides textual content, metadata is created to provide category information about the function.
 
 Previously, the formula documents had a structure like this:
+
 ```plaintext
 FunctionName: []
 Description: []
 ```
 
 This structure was a good start, but has certain limitations. Since DevExpress provides category information for each function, as well as an example, this information can be included as metadata.
+
 ```python
 class DevExpressFunction:
     name: str
@@ -22,6 +24,7 @@ class DevExpressFunction:
     example: str | None = None
     source: str = "DevExpress"
 ```
+
 In this case, the description is as embedding, while name, category, example, and source are metadata.
 
 This new structure and the metadata extraction during the scraping process can be used to analyze function usage.
@@ -53,6 +56,7 @@ Based on this example, a few-show example for a system prompt template has been 
 > "Create a formula, that writes all the designations of the vehicle groups of the truck of the current tour to a string separated by a semicolon."
 
 For *good* context and reasoning, hypothetical context documents are provided aswell:
+
 ```plaintext
 <formula_context>
 Document 1: ItemsToText(CollectionPropertyPath, string SelectorExpression, optionalstring ItemToStringExpression, optionalstring Separator, optionalstring OrderExpression, optionalbool distinct, optionalbool IgnoreEmptyValues): Creates a textual representation of elements in a list. CollectionPropertyPath = path of the table SelectorExpression = used to select elements from the table (*, First, Last, n) ItemToStringExpression = indicates the columns to be displayed, e.g. Number Separator = separator, e.g. , (comma) OrderExpression = indicates the column by which sorting is to take place (! = reverse sequence) Distinct = from now on, only unique values are returned. IgnoreEmptyValues = empty values are not displayed.
@@ -85,6 +89,7 @@ Properties:
 ```
 
 These documents itself should provide enough information, to *correctly* generate a similar formula. But since the context could be rather long and the model might not directly know, what to do with the context, a reasoning description is provided aswell:
+
 ```plaintext
 Use the ItemsTotext of the formula_context to create the formula. Inspect the provided textual_domain_knowledge to access the necessary properties. ITour provides "Truck", which is of type IVehicle. IVehicle contains a property called "VehicleGroups". These can be used to set the "CollectionPropertyPath" in the ItemsToText function. As the "ItemToTextExpression", use the "Designation" property of IVehicleGroup. The "Separator" should be set to a semicolon.
 ```
@@ -109,31 +114,33 @@ The main reason for this approach is, that some functions are hard to retrieve, 
 
 The idea is to identify the customer function usage behaviour, extract the most used functions and use them as default context.
 
-The analysis of the function usage is done in the `devexpress_analysis.ipynb` notebook. The following charts are created:
+The analysis of the function usage is done in the `analyze_usage.ipynb` [notebook](./analyze_usage.ipynb). The following charts are created:
 
-![Charts about the distribution of function categories](./notebooks/devexpress/output/filtered_categories_distribution.png "Distribution of function categories")
+![Charts about the distribution of function categories](./output/filtered_categories_distribution.png "Distribution of function categories")
 *These charts display the distribution of function categories. They are measured by the `Frequency`, which is the occurrence of the function in the customer data.*
 
-![Charts about the top 10 functions by frequency](./notebooks/devexpress/output/top_10_function_frequency.png "Top 10 functions by frequency")
+![Charts about the top 10 functions by frequency](./output/top_10_function_frequency.png "Top 10 functions by frequency")
 *These charts display the top 10 functions by frequency for custom and native functions.*
 
 These charts provide a good overview about the function usage. The `logical_functions`, `datetime_functions`and `string_functions` already make up to over **80%** of the **total function usage**. With this in mind and looking at the source distribution chart, more than **85%** of all used functions are **native functions**.
 
-![Charts about the Source usage by FilteredFrequency](./notebooks/devexpress/output/filtered_source_frequency.png "Source usage by FilteredFrequency")
+![Charts about the Source usage by FilteredFrequency](./output/filtered_source_frequency.png "Source usage by FilteredFrequency")
 *These charts display, how the usage of the sources is distributed.*
 
-Based on these findings, the following functions are used as default context: *this will be added later!*
+Based on these findings, the following functions are used as default context: `IsNullOrEmpty`, `ToStr`, `ItemsToText`, `ItemCount`, `ToStrDate`, `StrToDateTime`
 
-It is worth mentioning, that this approach can be a solid start and probably provide a good foundation for answer generation, but it is linked with manual work, which is not ideal. But if answers are getting better using this approach, this manual review step could be done very rarely. 
+It is worth mentioning, that this approach can be a solid start and probably provide a good foundation for answer generation, but it is linked with manual work, which is not ideal. But if answers are getting better using this approach, this manual review step could be done very rarely.
 *(Please note, if the custom functions are updated rarely, the manual work is not that much and the reviewing could be automatically executed!)*
 
 #### Using Specialized Agents
+
+> [!NOTE]
+> *Note, check the results of the latest meeting (`Meeting_6_18_06`). Multi-agents are slow and the results are currently acceptable!*
 
 This approach might be a solution to both problems. Different agents, e.g. a specialized agent in business logic could know, how to handle the context and what to extract, while a specialized DevExpress function agent could know, how to combine the context with the provided information.
 
 The agent could also have data about function usage and could automatically inject the most used functions. These agents could also get access to tools like DevExpress function `testing`, which could directly provide the information, if the created function uses a proper syntax.
 
 Also, each agent has its own task and thus a specific system prompt, which could already inherently lead to better results. Another advantage is, that the current research and trend goes into agent-based systems, thus this approach might be more future-proof.
-
 
 *Note, that all prompt templates and its examples are currently saved in a local MongoDB instance. Later, these could be included in this repository/appendix.*
