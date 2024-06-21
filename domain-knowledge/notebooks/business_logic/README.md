@@ -1,5 +1,8 @@
 # Business Logic
 
+> [!NOTE]
+> **Current state**: The knowledge graph does not provide a lot of benefits when creating formulas, thus, only relying on the vector database is enough. For other tasks or more complex requests, it still might be useful. This needs more investigation, traffic and feedback!
+
 This folder currently contains the domain knowledge of the business object interfaces of the ``Soloplan.CarLo.Business.dll`` assembly. The domain knowledge is extracted from the DocFX documentation of the assembly.
 
 ## Domain knowledge extraction
@@ -9,6 +12,7 @@ The notebook ```scrape_docfx_tests.ipynb``` contains code to scrape the DocFX do
 Besides scraping, the notebook also provides code to transform the ``scraped_domain_knowledge.json`` into raw text files and metadata files to provide to the vector database instance. Each document and its metadata can be loaded and embedded (the metadata will only be added as metadata for the embedding).
 
 Example of a scraped interface:
+
 ```json
 {
     "summary": "The status of a tour.",
@@ -61,6 +65,7 @@ Example of a scraped interface:
 After transformation, the following files are created:
 
 - ITourStatus.txt
+
 ```txt
 Interface: ITourStatus
 Summary: The status of a tour.
@@ -85,6 +90,7 @@ Properties:
 ```
 
 - ITourStatus.metadata.json
+
 ```json
 {
   "name": "ITourStatus",
@@ -132,29 +138,33 @@ More on this topic can be read in the following articles:
 ### Useful commands
 
 **Extend the maximum number of nodes to display in the graph:**
+
 ```cypher
 :config initialNodeDisplay: 1000
 ```
 
 **Display all nodes in the graph:**
+
 ```sql
 MATCH (n) RETURN n LIMIT 1000
 ```
 
-
 **Find all interfaces that reference the interface ``IBusinessPartner``:**
+
 ```sql
 MATCH (n:Interface)-[:REFERENCES]->(m:Interface {name: "IBusinessPartner"})  
 RETURN n  
 ```
 
 **Find all interfaces that are referenced by the interface ``IBusinessPartner``:**
+
 ```sql
 MATCH (n:Interface {name: "IBusinessPartner"})-[:REFERENCES]->(m:Interface)  
 RETURN m  
 ```
 
 **Clean the database:**
+
 ```sql
 match (a) -[r] -> () delete a, r
 
