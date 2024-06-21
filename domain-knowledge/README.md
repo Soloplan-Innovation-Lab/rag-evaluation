@@ -6,5 +6,6 @@ This folder currently contains the domain knowledge of the business object inter
 
 More in-depth information about the domain knowledge extraction and the expression knowledge can be found in the following files:
 
-- [Business Object Domain Knowledge](business_logic.md)
-- [DevExpress Formula Domain Knowledge](devexpress_formulas.md)
+- [Business Object Domain Knowledge](./notebooks/business_logic/README.md)
+- [DevExpress Formula Domain Knowledge](./notebooks/functions/README.md)
+- [Workflows](./notebooks/workflows/README.md)
