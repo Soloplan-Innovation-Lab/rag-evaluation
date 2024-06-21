@@ -221,7 +221,7 @@ A Variable can be used anywhere in ReAct, where a field of the business object w
 
 _Note, N=22109, where N is the amount of workflows in the dataset._
 
-First, to get an overview of the workflows, we can look at the amount of events, actions and conditions used in the workflows. These results can be found [here](../data/workflows/individual_freq.csv). Based on these results, the following plots were created. These plots provide an overview about the most used events, actions and conditions in all the configured workflows.
+First, to get an overview of the workflows, we can look at the amount of events, actions and conditions used in the workflows. These results can be found [here](../../../data/workflows/individual_freq.csv). Based on these results, the following plots were created. These plots provide an overview about the most used events, actions and conditions in all the configured workflows.
 
 For both the events and actions, the top 3 results make up to almost 90% of their respective category.
 
@@ -229,13 +229,13 @@ For both the events and actions, the top 3 results make up to almost 90% of thei
 Note: for better results, include the amount of the events (e.g. 80.000) and actions in the plot. Also, the amount of workflows, etc. could be included somewhere.
 -->
 
-![Charts about the frequency of the most used events and actions](./notebooks/workflows/output/top_10_events_actions.png "Top 10 most used events (left) and actions (right) in workflows")
+![Charts about the frequency of the most used events and actions](./output/top_10_events_actions.png "Top 10 most used events (left) and actions (right) in workflows")
 
-![Charts about the frequency of the most used conditions](./notebooks/workflows/output/top_3_conditions.png "Top 3 most used conditions in workflows")
+![Charts about the frequency of the most used conditions](./output/top_3_conditions.png "Top 3 most used conditions in workflows")
 
 Based on these previous insights, I was interested in seing the most used event and action combinations. Unsurprisingly, only events from the top 5 occurences are shown in these pairs. An equal outcome can be seen for the actions, with the only difference is, that they have one outlier `RequestDecision` in this list.
 
-![Charts about the frequency of the most used event and action combinations](./notebooks/workflows/output/top_10_pairs.png "Top 10 most used event and action pair combinations in workflows")
+![Charts about the frequency of the most used event and action combinations](./output/top_10_pairs.png "Top 10 most used event and action pair combinations in workflows")
 
 Besides these overarching insights, some more in-depth analysis was done. For this, the following subset has been created:
 
