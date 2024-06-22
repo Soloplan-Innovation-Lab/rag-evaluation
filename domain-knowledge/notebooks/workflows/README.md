@@ -44,31 +44,28 @@ A Workflow-Event listens to an event that happens in .NET CarLo. Definition file
 
 The base class for these events is `BusinessObjectEventDefinition`. This holds information about the business object, e.g. its PropertyId in order to access it. The base class of this, `EventDefinition`, actually has all informations about the actions of this event, its condition and variable definitions. For the workflows itself, this knowledge is not important, but for a deeper understanding of how ReAct works, this is interesting. At the end, the “root base class” is `DefinitionBase`, which contains the `Id`, information about the state (e.g. if the event is active) and a description. The real interesting part is, that this `Id` is used as `EventId` in the XML file!
 
-The default attributes of the event-tags are (defined in the `EventDefinitionXmlContentWriter`):
+Each tag has different optional and required properties, as defined here:
 
-- `EventId` (as far as I know, this can be any random string; I’ve seen workflows with GUIDs and ObjectId-like (bson) ids)
-- `Mandatory` (optional)
-- `EventActive` (optional; mostly used, if the event is inactive)
-- `EventDescription` (optional)
-- `Instruction` (optional)
-- `ResourceName` (optional)
-- `Condition` (optional)
-
-All other events add additional attributes:
-
-- `OnPropertyChangedEventDefinitionXmlContentWriter`
-  - `ChangedProperty` (the property that changes on this event)
-- `OnBeforeCommitEventDefinitionXmlContentWriter`, `OnAfterCommitEventDefinitionXmlContentWriter`
-  - `UpdateEvent` (optional, defaults to [insert, update]; defines the type of update that will be or was done for the business object)
-- `OnCustomReActEventDefinitionBaseXmlContentWriter`
-  - `CustomReActEventCallUsage` (optional, defines how the event can be called)
-  - `ShowParamDialog` (optional)
-  - `Shortcut` (optional)
-  - `ContextMenuUsage` (optional, controls the usage of the context menu, i. e. for business object or for property field)
-  - `ContextMenuPropertyPath` (optional, the property path which defines for which property the context menu should be shown)
-  - `ContextMenuPosition` (optional, he context menu entry where this custom ReAct event should be placed)
-- `OnAfterReproductionEventDefinitionXmlContentWriter`
-  - `ReproductionUseCase` (optional, the use case for which this event should be executed)
+| Defined in | Property name | Information |
+| --- | --- | --- |
+| EventDefinitionXmlContentWriter | EventId  | required, as far as I know, this can be any random string; I’ve seen workflows with GUIDs and ObjectId-like (bson) ids |
+|  | Mandatory  | optional |
+|  | EventActive  | optional; mostly used, if the event is inactive |
+|  | EventDescription | optional |
+|  | Instruction  | optional |
+|  | ResourceName  | optional |
+|  | Condition | optional |
+| OnPropertyChangedEventDefinitionXmlContentWriter  | ChangedProperty  | required, the property that changes on this event |
+|  | PropertyChangeEventSource | optional, for which property changed events this should be triggered |
+|  | PropertyChangeEventSourceName | optional, for which property changed events this should be triggered |
+| OnBeforeCommitEventDefinitionXmlContentWriter, OnAfterCommitEventDefinitionXmlContentWriter | UpdateEvent  | optional, defaults to [insert, update]; defines the type of update that will be or was done for the business object |
+| OnCustomReActEventDefinitionBaseXmlContentWriter | CustomReActEventCallUsage  | optional, defines how the event can be called |
+|  | ShowParamDialog  | optional |
+|  | Shortcut  | optional |
+|  | ContextMenuUsage  | optional, controls the usage of the context menu, i. e. for business object or for property field |
+|  | ContextMenuPropertyPath  | optional, the property path which defines for which property the context menu should be shown |
+|  | ContextMenuPosition  | optional, he context menu entry where this custom ReAct event should be placed |
+| OnAfterReproductionEventDefinitionXmlContentWriter | ReproductionUseCase  | optional, the use case for which this event should be executed |
 
 A few examples to look at the different properties and how to construct workflows:
 
@@ -158,8 +155,6 @@ This is a list of actions, that can be executed:
 | 33 | OutlookAppointment | OutlookAppointment |  | 0 |
 | 34 | ExternalBusinessObjectExport | ExportWithExternalBusinessObject |  | 0 |
 | 35 | SearchOrCreateBusinessObject | SearchOrCreateBusinessObject |  | 0 |
-
-(Idea: create an endpoint, that lets you filter workflows and returns them: e.g. give me a workflow that has “Wait” or “Return” in it)
 
 ### Conditions
 
