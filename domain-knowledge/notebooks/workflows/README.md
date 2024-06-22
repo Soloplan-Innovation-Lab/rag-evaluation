@@ -72,17 +72,17 @@ A few examples to look at the different properties and how to construct workflow
 ```xml
 <!-- IConsignment (Sendung) -->
 <BusinessObject TypePropertyId="145000">
-	<OnCustomEvent
-		EventId="8473f2f179b741c497279178626b3d2a"
-		EventDescription="Wareneingang per Mail"
-		CustomReActEventCallUsage="WithinWorkflows, ContextMenu"
-		ShowParamDialog="DoNotShow"
-		ContextMenuPosition="3cc71419-2a1d-451a-91de-f0ae98c7415b">
-			<SendMail
-				ActionId="820357cf8e784fa48a90118647de1095"
-				MailTemplate="55437670"
-				MailTarget="Outlook"/>
-	</OnCustomEvent>
+  <OnCustomEvent
+    EventId="8473f2f179b741c497279178626b3d2a"
+    EventDescription="Wareneingang per Mail"
+    CustomReActEventCallUsage="WithinWorkflows,ContextMenu"
+    ShowParamDialog="DoNotShow"
+    ContextMenuPosition="3cc71419-2a1d-451a-91de-f0ae98c7415b">
+      <SendMail
+        ActionId="820357cf8e784fa48a90118647de1095"
+        MailTemplate="55437670"
+        MailTarget="Outlook"/>
+  </OnCustomEvent>
 </BusinessObject>
 ```
 
@@ -91,23 +91,22 @@ The `OnCustomEvent` defines the way how the event can be called, “disables” 
 ```xml
 <!-- IConsignmentTransportPlanningStatus (Sendungsstatus) -->
 <BusinessObject TypePropertyId="5715200">
-	<OnAfterCommit
-		EventId="0c2d4d3a-3790-4e5c-98ab-7492b0eba006"
-		EventDescription="Export Status"
-		Condition="[5715208.145004.500403.20005] == 18376"
-		UpdateEvent="Insert">
-			<AddToExportQueue
-				ActionId="ea47e746-e893-4769-a60c-01edc3006e48"
-				ExternalSystem="62931727"
-				OperationType="Create"
-				TargetTypeName="ConsignmentTransportPlanningStatus"
-				ConfigurationName="KNStatusExport-v1"
-				FileType="Xml">
-					<ExpressionCondition
-						Expression="[5715208.145004.500403.20005] == 18376"/>
-			</AddToExportQueue>
-			<ReActGroup Id="62932848"/>
-	</OnAfterCommit>
+  <OnAfterCommit
+    EventId="0c2d4d3a-3790-4e5c-98ab-7492b0eba006"
+    EventDescription="Export Status"
+    Condition="[5715208.145004.500403.20005] == 18376"
+    UpdateEvent="Insert">
+      <AddToExportQueue
+        ActionId="ea47e746-e893-4769-a60c-01edc3006e48"
+        ExternalSystem="62931727"
+        OperationType="Create"
+        TargetTypeName="ConsignmentTransportPlanningStatus"
+        ConfigurationName="KNStatusExport-v1"
+        FileType="Xml">
+	  <ExpressionCondition Expression="[5715208.145004.500403.20005] == 18376"/>
+      </AddToExportQueue>
+      <ReActGroup Id="62932848"/>
+  </OnAfterCommit>
 </BusinessObject>
 ```
 
@@ -176,27 +175,27 @@ Here is an example, that includes multiple conditions.
 ```xml
 <!-- ITransportOrder (Transportauftrag) -->
 <BusinessObject TypePropertyId="155000">
-	<OnPropertyChanged
-		EventId="940e3f8a-cef5-4287-b598-c2274e14fc79"
-		EventActive="True"
-		EventDescription="+ AG 201885, Änderung LM-Buchung ..."
-		ChangedProperty="5710303_5702901">
-			<SetValueByConst
-				ActionId="7a72796d-22d8-49b1-a96d-4b7451ec5daf"
-				TargetProperty="155207_5040103"
-				Value="Sender">
-					<Conditions Type="AND">
-						<ExpressionCondition Expression="[155306.20005] == 201885"/>
-						<Conditions Type="OR">
-							<ExpressionCondition Expression="[5710303.5702901.20005] == 356821 "/>
-							<ExpressionCondition Expression="[5710303.5702901.20005] == 201892 "/>
-							<ExpressionCondition Expression="[5710303.5702901.20005] == 3019 "  />
-							<ExpressionCondition Expression="[5710303.5702901.20005] == 203610 "/>
-							<ExpressionCondition Expression="[5710303.5702901.20005] == 355514 "/>
-						</Conditions>
-					</Conditions>
-			</SetValueByConst>
-	</OnPropertyChanged>
+  <OnPropertyChanged
+    EventId="940e3f8a-cef5-4287-b598-c2274e14fc79"
+    EventActive="True"
+    EventDescription="+ AG 201885, Änderung LM-Buchung ..."
+    ChangedProperty="5710303_5702901">
+      <SetValueByConst
+        ActionId="7a72796d-22d8-49b1-a96d-4b7451ec5daf"
+        TargetProperty="155207_5040103"
+        Value="Sender">
+          <Conditions Type="AND">
+            <ExpressionCondition Expression="[155306.20005] == 201885"/>
+            <Conditions Type="OR">
+              <ExpressionCondition Expression="[5710303.5702901.20005] == 356821 "/>
+              <ExpressionCondition Expression="[5710303.5702901.20005] == 201892 "/>
+              <ExpressionCondition Expression="[5710303.5702901.20005] == 3019 "  />
+              <ExpressionCondition Expression="[5710303.5702901.20005] == 203610 "/>
+              <ExpressionCondition Expression="[5710303.5702901.20005] == 355514 "/>
+            </Conditions>
+          </Conditions>
+      </SetValueByConst>
+  </OnPropertyChanged>
 </BusinessObject>
 ```
 
