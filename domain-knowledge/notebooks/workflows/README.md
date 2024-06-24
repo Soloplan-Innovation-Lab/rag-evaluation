@@ -103,7 +103,7 @@ The `OnCustomEvent` defines the way how the event can be called, “disables” 
         TargetTypeName="ConsignmentTransportPlanningStatus"
         ConfigurationName="KNStatusExport-v1"
         FileType="Xml">
-	  <ExpressionCondition Expression="[5715208.145004.500403.20005] == 18376"/>
+          <ExpressionCondition Expression="[5715208.145004.500403.20005] == 18376"/>
       </AddToExportQueue>
       <ReActGroup Id="62932848"/>
   </OnAfterCommit>
@@ -161,8 +161,7 @@ Conditions are not strictly coupled to events or actions, but are rather used in
 
 |  | XML-tag | Interface representation | Information | Available |
 | --- | --- | --- | --- | --- |
-| 1 | Condition  | CompositeConditionOr | Type=”OR” | 1 |
-| 2 | Condition  | CompositeConditionAnd  | Type=”AND” | 1 |
+| 1 | Conditions  | CompositeConditionOr, CompositeConditionAnd | Type="OR", Type="AND"  | 1 |
 | 3 | ExpressionCondition | FormulaCondition |  | 1 |
 | 4 | OngoingOperationCondition | OngoingOperationCondition |  | 0 |
 | 5 | FieldIsSetCondition | FieldIsSetCondition |  | 0 |
